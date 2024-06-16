@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Evaluator.h"
 using namespace evaluator;
 

@@ -1,6 +1,5 @@
-#include "pch.h"
 #include <algorithm>
-#include <numeric>
+#include <limits>
 #include <stack>
 #include <list>
 
@@ -38,7 +37,7 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 	char operation = 0;
 	while (strm >> token)
 	{
-		if (std::count_if(token.cbegin(), token.cend(), std::isdigit))
+        if (std::count_if(token.cbegin(), token.cend(), ::isdigit))
 		{
 			auto value = std::stod(token);
 			exp.push(std::make_unique<Number>(value));

@@ -21,9 +21,10 @@ HEADERS += \
 	include/common.h include/Evaluator.h include/Parser.hpp \
 	include/SyntaxTree.hpp include/Precedence.hpp include/Expression.hpp \
 	include/utility.hpp \
-	C:/Users/Saqib/Desktop/Code/General/DSA/StackandQueue/Stack.hpp
+        Stack.hpp \
+    includes.h
 
-INCLUDEPATH += /Users/Saqib/Desktop/Code/General/DSA/ include/
+INCLUDEPATH += include/
 # Default rules for deployment.
 unix {
     target.path = /usr/lib

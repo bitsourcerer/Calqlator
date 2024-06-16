@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Expression.hpp"
 
 using namespace evaluator;

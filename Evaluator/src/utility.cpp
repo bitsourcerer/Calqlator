@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "utility.hpp"
 
 using namespace evaluator::util;

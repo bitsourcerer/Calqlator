@@ -18,22 +18,35 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-RESOURCES += Resources.qrc
-
 EVALUATORPATH = $$PWD/../Evaluator
 INCLUDEPATH += $$EVALUATORPATH
 DEPENDPATH += $$EVALUATORPATH
 
+win32 {
 CONFIG(debug, debug|release) {
     DLLPATH = $$EVALUATORPATH/bin/debug
-	DESTDIR = $$OUT_PWD/debug
+        DESTDIR = $$OUT_PWD/debug
 } else {
     DLLPATH = $$EVALUATORPATH/bin/release
-	DESTDIR = $$OUT_PWD/release
+        DESTDIR = $$OUT_PWD/release
 }
 
 LIBS += -L$$DLLPATH -lEvaluator
-QMAKE_POST_LINK += $$quote(copy /Y $$DLLPATHEvaluator.dll $$DESTDIR)
+QMAKE_POST_LINK += $$quote(copy /Y $$DLLPATH/Evaluator.dll $$DESTDIR)
+}
+
+unix {
+CONFIG(debug, debug|release) {
+    SOPATH = $$EVALUATORPATH/bin/debug
+    DESTDIR = $$OUT_PWD/debug
+} else {
+    SOPATH = $$EVALUATORPATH/bin/release
+    DESTDIR = $$OUT_PWD/release
+}
+
+LIBS += -L$$SOPATH -lEvaluator
+QMAKE_POST_LINK += $$quote(cp -f $$SOLPATH/libEvaluator.so $$DESTDIR)
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

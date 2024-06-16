@@ -1,9 +1,8 @@
-#include "pch.h"
 #include <sstream>
 #include <future>
 
 #include "Parser.hpp"
-#include "StackandQueue/Stack.hpp"
+#include "Stack.hpp"
 
 using namespace evaluator;
 using namespace evaluator::operations;

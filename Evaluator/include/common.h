@@ -1,9 +1,26 @@
 #pragma once
 
-#include "pch.h"
 #include "API.h"
 #include "utility.hpp"
+#include "framework.h"
+
+// All standard includes : BEGIN
+#include <functional>
+#include <memory>
+#include <exception>
+#include <cassert>
+#include <stdexcept>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <map>
+#include <cctype>
+#include <numeric>
+#include <algorithm>
+#include <string_view>
 #include <variant>
+// All standard includes : END
 
 #ifndef NDEBUG
 #define DEBUG true
@@ -28,7 +45,7 @@ namespace evaluator
 	class nullstream_t : public std::ostringstream
 	{
 		template <typename T>
-		friend nullstream_t& operator << (nullstream_t&, T) { }
+        friend nullstream_t& operator << (nullstream_t &ns, T) { return ns; }
 	} static nullstream;
 
 #ifndef NDEBUG

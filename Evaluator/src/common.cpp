@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "common.h"
 #include "utility.hpp"
 #include <cmath>

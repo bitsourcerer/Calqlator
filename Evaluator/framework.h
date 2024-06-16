@@ -4,4 +4,7 @@
 #define NOMINMAX
 #define no_init_all deprecated
 // Windows Header Files
+
+#ifdef _WIN32
 #include <windows.h>
+#endif
