@@ -19,15 +19,15 @@ public:
 private slots:
     void on_evaluation_clicked(); // main function evaluates built expression
     void handle_digits(QAbstractButton*); // for all digits and dot
-    void handle_command(QAbstractButton*); // for commands like clear whole display, clear number or backspace
+    void handle_commands(QAbstractButton*); // for commands like clear whole display, reset or backspace
     void handle_operations(QAbstractButton*); // for operations like add, subtract, multiply and divide
     void handle_parentheses(); // for parenthesis exclusively
 
 private:
     Ui::MainWindow *ui;
-    void do_backspace() const;
-    void clear_all() const;
-    void clear_screen() const;
+    void backspace() const;
+    void reset() const;
+    void clear() const;
 
     static void replace_subexpr(QString&);
 };

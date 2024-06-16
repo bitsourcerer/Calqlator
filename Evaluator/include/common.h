@@ -37,18 +37,6 @@ namespace evaluator
 	static std::ostream& dbglog = nullstream;
 #endif // !NDEBUG
 
-	//enum /* class */ BinaryOperator : char
-	//{
-	//	NEGATION = '-',
-	//	SUBTRACTION = '-',
-	//	ADDITION = '+',
-	//	MULTIPLICATION = '*',
-	//	DIVISION = '/',
-	//	EXPONENTIATION = '^',
-	//	MODULATION = '%',
-	//	UNSPECIFIED = 'x'
-	//};
-
 	namespace operations
 	{
 		using OperationEnumeratorUnderlyingType = char;
@@ -85,20 +73,18 @@ namespace evaluator
 		{
 			enum EVALUATOR_API Type : char // UNUSED
 			{
-				NONE, // just a number (operand)
+                NONE,
 				UNARY,
 				BINARY,
 				FUNCTION
 			} type = Type::NONE;
-
-			// Type type = Type::NONE;
 
 			union
 			{
 				Functions f;
 				BinaryOPS b;
 				UnaryOPS u;
-				char o; // other: unused can hold parens
+                char o;
 			};
 
 			OldOperation() = default;
@@ -107,13 +93,11 @@ namespace evaluator
 			OldOperation(UnaryOPS uop) : u(uop) , type(Type::FUNCTION) { }
 		};
 
-		// std::variant<BinaryOPS, UnaryOPS> UnifiedOps;
 		extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
 		extern EVALUATOR_API std::unordered_map<operations::UnaryOPS, std::function<Result(Operand)>> unops;
 		extern EVALUATOR_API const std::map<std::string_view, Functions> funcids;
 		extern EVALUATOR_API const std::unordered_map<Functions, std::function<Result(Operand)>> funcs;
 	}
 	using Operation = std::variant<std::monostate, operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
-	// using VariantToken = std::variant<Operand, operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
 	using Token = std::variant<Operand, Operation>;
 }

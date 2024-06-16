@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QStack>
+#include <QElapsedTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setFixedSize(370, 410);
     connect(ui->digits, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_digits(QAbstractButton*)));
-    connect(ui->commands, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_command(QAbstractButton*)));
+    connect(ui->commands, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_commands(QAbstractButton*)));
     connect(ui->operations, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_operations(QAbstractButton*)));
     connect(ui->lparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->rparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
@@ -36,7 +37,8 @@ eval::Evaluator evl;
 
 void MainWindow::on_evaluation_clicked()
 {
-    static QString last;
+    // static QString last;
+    static QElapsedTimer watch;
     bool flag = false; // if markers are present we turn off replace_subexpr so that it doesnt cause problems
 
     auto expr = ui->equation->text();
@@ -59,8 +61,9 @@ void MainWindow::on_evaluation_clicked()
      * if(ui->equation->text().isEmpty()) expr.append(' ' + last);
      */
 
+    watch.start();
     auto result = evl.feed(expr.toStdString()).evaluate();
-    qDebug() << "Result: " << result << '\n';
+    qDebug() << "Result: " << result << " | Took " << (watch.nsecsElapsed() / 1e6) << " milliseconds!\n";
     ui->number->setText(QString::number(result));
 
     ready = paren = period = false;
@@ -69,7 +72,7 @@ void MainWindow::on_evaluation_clicked()
 void MainWindow::handle_digits(QAbstractButton *button)
 {
     if(paren) { qWarning("Only Operations Allowed!\n"); return; }
-    if(!ready) clear_screen(); ready = true;
+    if(!ready) clear(); ready = true;
 
     auto btn = qobject_cast<QPushButton*>(button);
     auto num = ui->number->text();
@@ -88,20 +91,20 @@ void MainWindow::handle_digits(QAbstractButton *button)
     // num.remove(0, 1);
 }
 
-void MainWindow::handle_command(QAbstractButton *button)
+void MainWindow::handle_commands(QAbstractButton *button)
 {
     auto command = button->objectName();
-    if(command == "clear")
+    if(command == "reset")
     {
-        clear_all();
+        reset();
     }
-    else if(command == "clearNumber")
+    else if(command == "clear")
     {
-        clear_screen();
+        clear();
     }
     else if(command == "backspace")
     {
-        do_backspace();
+        backspace();
     }
     else;
 }
@@ -160,32 +163,32 @@ void MainWindow::handle_parentheses()
     ui->equation->setText(eqn + btn->text());
 }
 
-void MainWindow::clear_all() const
+void MainWindow::reset() const
 {
-    clear_screen();
+    clear();
     ui->equation->clear();
 }
 
-void MainWindow::clear_screen() const
+void MainWindow::clear() const
 {
     ui->number->setText("0");
     period = false;
 }
 
-void MainWindow::do_backspace() const
+void MainWindow::backspace() const
 {
-    if(!ready) return; // don't let backspace if not ready (windows calculator's behaviour)
+    if(!ready) return; // don't backspace if not ready (windows calculator's behaviour)
 
     auto text = ui->number->text();
-    auto dotPos = text.indexOf('.');
+    auto dotPos = period ? text.indexOf('.') : -1; // Index of point in number!
 
-    if(text.length() <= 1) clear_screen();
+    if(text.length() <= 1) clear();
     else
     {
         // text.truncate(text.length() - 1); // OR text.pop_back()
         text.chop(1);
         ui->number->setText(text);
-        qDebug() << "Backspaced: " << text << '\n';
+        // qDebug() << "Backspaced: " << text << '\n';
     }
     if(period && text.length() <= dotPos) period = false; // equivalent to {dotPos >= text.length()} or {!(dotPos > text.length())}
     // if dot is also truncated then make it available again {if index is equal to length then that index is invalid}

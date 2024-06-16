@@ -6,9 +6,10 @@
 
 namespace evaluator
 {
-	__interface Expression
+    struct Expression
 	{
 		virtual Result evaluate(void) const = 0;
+        virtual ~Expression() = default;
 	};
 
 	class Number : public Expression
@@ -54,18 +55,4 @@ namespace evaluator
 		std::unique_ptr<Expression> value;
 		operations::Functions function;
 	};
-
-	// template <OperationType opt>
-
-	/*template <> struct Token<OperationType::UNARY>
-	{
-		char op;
-		operand_t operand;
-	};*/
-
-	/*template <> struct Token<OperationType::BINARY>
-	{
-		char op;
-		operand_t lhs, rhs;
-	};*/
 }

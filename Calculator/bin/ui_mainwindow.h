@@ -48,16 +48,16 @@ public:
     QPushButton *rparen;
     QPushButton *addition;
     QPushButton *modulus;
-    QPushButton *clear;
+    QPushButton *reset;
     QPushButton *evaluation;
     QPushButton *multiplication;
     QPushButton *division;
-    QPushButton *clearNumber;
+    QPushButton *clear;
     QStatusBar *statusbar;
     QMenuBar *menuBar;
-    QButtonGroup *operations;
-    QButtonGroup *digits;
     QButtonGroup *commands;
+    QButtonGroup *digits;
+    QButtonGroup *operations;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -242,11 +242,11 @@ public:
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
 "border-radius: 5px;"));
-        clear = new QPushButton(centralwidget);
-        commands->addButton(clear);
-        clear->setObjectName(QString::fromUtf8("clear"));
-        clear->setGeometry(QRect(11, 102, 50, 40));
-        clear->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
+        reset = new QPushButton(centralwidget);
+        commands->addButton(reset);
+        reset->setObjectName(QString::fromUtf8("reset"));
+        reset->setGeometry(QRect(11, 102, 50, 40));
+        reset->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(128, 128, 20, 0.35);\n"
 "border-radius: 5px;"));
         evaluation = new QPushButton(centralwidget);
@@ -272,11 +272,11 @@ public:
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
 "border-radius: 5px;"));
-        clearNumber = new QPushButton(centralwidget);
-        commands->addButton(clearNumber);
-        clearNumber->setObjectName(QString::fromUtf8("clearNumber"));
-        clearNumber->setGeometry(QRect(80, 100, 50, 40));
-        clearNumber->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
+        clear = new QPushButton(centralwidget);
+        commands->addButton(clear);
+        clear->setObjectName(QString::fromUtf8("clear"));
+        clear->setGeometry(QRect(80, 100, 50, 40));
+        clear->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(128, 128, 20, 0.35);\n"
 "border-radius: 5px;"));
         MainWindow->setCentralWidget(centralwidget);
@@ -319,11 +319,11 @@ public:
         rparen->setText(QApplication::translate("MainWindow", ")", nullptr));
         addition->setText(QApplication::translate("MainWindow", "+", nullptr));
         modulus->setText(QApplication::translate("MainWindow", "%", nullptr));
-        clear->setText(QApplication::translate("MainWindow", "C", nullptr));
+        reset->setText(QApplication::translate("MainWindow", "C", nullptr));
         evaluation->setText(QApplication::translate("MainWindow", "=", nullptr));
         multiplication->setText(QApplication::translate("MainWindow", "*", nullptr));
         division->setText(QApplication::translate("MainWindow", "/", nullptr));
-        clearNumber->setText(QApplication::translate("MainWindow", "CE", nullptr));
+        clear->setText(QApplication::translate("MainWindow", "CE", nullptr));
     } // retranslateUi
 
 };

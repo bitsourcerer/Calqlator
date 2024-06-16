@@ -478,7 +478,7 @@ border-radius: 5px;</string>
      <string notr="true">operations</string>
     </attribute>
    </widget>
-   <widget class="QPushButton" name="clear">
+   <widget class="QPushButton" name="reset">
     <property name="geometry">
      <rect>
       <x>11</x>
@@ -565,7 +565,7 @@ border-radius: 5px;</string>
      <string notr="true">operations</string>
     </attribute>
    </widget>
-   <widget class="QPushButton" name="clearNumber">
+   <widget class="QPushButton" name="clear">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -604,12 +604,12 @@ border-radius: 5px;</string>
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="operations"/>
+  <buttongroup name="commands"/>
   <buttongroup name="digits">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="commands"/>
+  <buttongroup name="operations"/>
  </buttongroups>
 </ui>

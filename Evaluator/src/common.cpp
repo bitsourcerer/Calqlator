@@ -36,22 +36,4 @@ EVALUATOR_API const std::map<std::string_view, Functions> operations::funcids
 	{ "logtwo", Functions::LOG2 }
 };
 
-std::vector<std::string> tokenize(std::string expression)
-{
-	std::vector<std::string> res; res.reserve(expression.length());
-	std::istringstream strm(expression);
-
-	std::string token;
-	while (strm >> token)
-	{
-		res.push_back(token);
-	}
-	return res;
-}
-
-bool eat_whitespace(char current) noexcept // : UNUSED since std::isdigit is used
-{
-	return current == ' ' || current == '\t' || current == '\n' || current == '\r';
-}
-
 extern std::ostream& dbglog;

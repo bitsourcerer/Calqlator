@@ -7,10 +7,6 @@
 #include "SyntaxTree.hpp"
 #include "Parser.hpp"
 
-/*
- TODO: enable multithreading support {Start from Token Queue and replace it with ThreadSafeQueue, Producer and Consumer}
-*/
-
 using namespace evaluator;
 using namespace evaluator::operations;
 
@@ -121,84 +117,7 @@ SyntaxTree & evaluator::SyntaxTree::build(const std::queue<Token>& tokens)
 	return *this;
 }
 
-SyntaxTree& SyntaxTree::buildFromOldTokens(const std::queue<OldToken> &tokens)
-{
-	constexpr auto Invalid = std::numeric_limits<Operand>::quiet_NaN();
-	std::queue<OldToken> tokenStrm(tokens);
-
-	// only if expression is container of Tokens it can be easier to parse
-	std::stack<std::unique_ptr<Expression>> expressions;
-	for (OldToken current = tokenStrm.front(); !tokenStrm.empty();)
-	{
-		auto &value = current.getValue();
-		switch (current.getType())
-		{
-		case OldToken::Type::OPERAND:
-		{
-			auto num = std::any_cast<Operand>(value);
-			expressions.push(std::make_unique<Number>(num));
-		} break;
-		case OldToken::Type::OPERATION:
-			/* TODO: unify TokenType OPERATOR and FUNCTION into OPERATION */
-		{
-			auto oper = std::any_cast<OldOperation>(value);
-			std::unique_ptr<Expression> expr;
-			switch (oper.type)
-			{
-			case OldOperation::FUNCTION:
-			{
-				expr = std::make_unique<Function>(std::move(expressions.top()), oper.f);
-				expressions.pop();
-			} break;
-			case OldOperation::BINARY:
-			{
-				auto right = std::move(expressions.top()); expressions.pop();
-				auto left = std::move(expressions.top()); expressions.pop();
-
-				expr = std::make_unique<Binary>(std::move(left), std::move(right), oper.b);
-			} break;
-			case OldOperation::UNARY:
-			{
-				expr = std::make_unique<Unary>(888.888, oper.u); // TODO
-			} break;
-			default:
-				break;
-			}
-			expressions.push(std::move(expr));
-		} break;
-		default:
-			break;
-		}
-		tokenStrm.pop();
-		if (!tokenStrm.empty()) current = tokenStrm.front();
-		// current = tokenStrm.front();
-	}
-	assert(!expressions.empty());
-	root = std::move(expressions.top()); expressions.pop();
-
-	return *this;
-}
-
 Result SyntaxTree::evaluate() const
 {
 	return root->evaluate();
 }
-
-//void SyntaxTree::assign(NodePtr node)
-//{
-//	if(!root) root = node;
-//	decltype(root) n;
-//	for (n = root; n->next; n = n->next);
-//	n = node;
-//}
-
-//void SyntaxTree::assign(std::unique_ptr<Expression> expression)
-//{
-//	assign(insert(std::move(expression)));
-//}
-
-//SyntaxTree::NodePtr SyntaxTree::insert(std::unique_ptr<Expression> expression)
-//{
-//	// if (!root) { root = std::move(node); return; }
-//	return std::make_unique<Expression>(std::move(expression));
-//}
