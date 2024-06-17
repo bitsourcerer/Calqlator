@@ -1,5 +1,6 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <cstdlib>
+#include "framework.h"
 
 #ifdef _WIN32
 BOOL APIENTRY DllMain( HMODULE hModule,

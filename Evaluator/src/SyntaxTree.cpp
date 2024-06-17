@@ -20,7 +20,12 @@ SyntaxTree::SyntaxTree(std::string_view expression) : SyntaxTree()
 
 evaluator::SyntaxTree::SyntaxTree(const std::queue<Token> &tokens)
 {
-	build(tokens);
+    build(tokens);
+}
+
+SyntaxTree::SyntaxTree(std::queue<Token> &&tokens)
+{
+    build(std::move(tokens));
 }
 
 // All need heavy optimizations
@@ -68,53 +73,102 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 	return *this;
 }
 
-SyntaxTree & evaluator::SyntaxTree::build(const std::queue<Token>& tokens)
+//SyntaxTree & evaluator::SyntaxTree::build(std::queue<Token>&& tokens)
+//{
+//    auto &&toks(std::move(tokens));
+//    // std::list<Token> ltok(toks.size());
+//    /*for (auto &t : ltok)
+//	{
+//		t = toks.front();
+//		toks.pop();
+//    }*/
+
+//	std::stack<std::unique_ptr<Expression>> expressions;
+//    while (!toks.empty())
+//	{
+//        auto current = toks.front();
+//		std::visit([&](const auto &token) {
+//			if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operand>)
+//				expressions.push(std::make_unique<Number>(token));
+//			else if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operation>)
+//			{
+//				std::visit([&](const auto &operation) {
+//					if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::BinaryOPS>)
+//					{
+//						auto right = std::move(expressions.top()); expressions.pop();
+//						auto left = std::move(expressions.top()); expressions.pop();
+
+//						expressions.push(std::make_unique<Binary>(std::move(left), std::move(right), operation));
+//					}
+//					else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::UnaryOPS>)
+//					{
+//						expressions.push(std::make_unique<Unary>(888.888, operation));
+//					}
+//					else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::Functions>)
+//					{
+//						auto operand = std::move(expressions.top()); expressions.pop();
+//						expressions.push(std::make_unique<Function>(std::move(operand), operation));
+//					}
+//					else;
+//				}, token);
+//			}
+//			else return;
+//		}, current);
+//        toks.pop();
+//	}
+
+//	root = std::move(expressions.top()); expressions.pop();
+//	return *this;
+//}
+
+SyntaxTree& evaluator::SyntaxTree::build(const std::queue<Token>& tokens)
 {
-	auto toks(tokens);
+    auto toks(std::move(tokens));
     // std::list<Token> ltok(toks.size());
     /*for (auto &t : ltok)
-	{
-		t = toks.front();
-		toks.pop();
+    {
+        t = toks.front();
+        toks.pop();
     }*/
 
-	std::stack<std::unique_ptr<Expression>> expressions;
+    std::stack<std::unique_ptr<Expression>> expressions;
     while (!toks.empty())
-	{
+    {
         auto current = toks.front();
-		std::visit([&](const auto &token) {
-			if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operand>)
-				expressions.push(std::make_unique<Number>(token));
-			else if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operation>)
-			{
-				std::visit([&](const auto &operation) {
-					if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::BinaryOPS>)
-					{
-						auto right = std::move(expressions.top()); expressions.pop();
-						auto left = std::move(expressions.top()); expressions.pop();
+        std::visit([&](const auto &token) {
+            if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operand>)
+                expressions.push(std::make_unique<Number>(token));
+            else if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operation>)
+            {
+                std::visit([&](const auto &operation) {
+                    if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::BinaryOPS>)
+                    {
+                        auto right = std::move(expressions.top()); expressions.pop();
+                        auto left = std::move(expressions.top()); expressions.pop();
 
-						expressions.push(std::make_unique<Binary>(std::move(left), std::move(right), operation));
-					}
-					else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::UnaryOPS>)
-					{
-						expressions.push(std::make_unique<Unary>(888.888, operation));
-					}
-					else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::Functions>)
-					{
-						auto operand = std::move(expressions.top()); expressions.pop();
-						expressions.push(std::make_unique<Function>(std::move(operand), operation));
-					}
-					else;
-				}, token);
-			}
-			else return;
-		}, current);
+                        expressions.push(std::make_unique<Binary>(std::move(left), std::move(right), operation));
+                    }
+                    else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::UnaryOPS>)
+                    {
+                        expressions.push(std::make_unique<Unary>(888.888, operation));
+                    }
+                    else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::Functions>)
+                    {
+                        auto operand = std::move(expressions.top()); expressions.pop();
+                        expressions.push(std::make_unique<Function>(std::move(operand), operation));
+                    }
+                    else;
+                }, token);
+            }
+            else return;
+        }, current);
         toks.pop();
-	}
+    }
 
-	root = std::move(expressions.top()); expressions.pop();
-	return *this;
+    root = std::move(expressions.top()); expressions.pop();
+    return *this;
 }
+
 
 Result SyntaxTree::evaluate() const
 {

@@ -32,6 +32,12 @@ const std::queue<Token>& Parser::getTokens() const
 	return tokens;
 }
 
+std::queue<Token>&& Parser::moveTokens()
+{
+    parse();
+    return std::move(tokens);
+}
+
 std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string &expression)
 {
     // Finite State Machine : digits, symbols, letters, parenthesis

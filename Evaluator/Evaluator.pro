@@ -21,7 +21,7 @@ HEADERS += \
 	include/common.h include/Evaluator.h include/Parser.hpp \
 	include/SyntaxTree.hpp include/Precedence.hpp include/Expression.hpp \
 	include/utility.hpp \
-        Stack.hpp \
+	Stack.hpp \
     includes.h
 
 INCLUDEPATH += include/
