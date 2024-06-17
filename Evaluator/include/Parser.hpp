@@ -16,7 +16,7 @@ namespace evaluator
 		Parser() = default;
 		Parser(std::string_view);
 		Parser& feed(std::string_view);
-		std::string parse() const;
+        [[MAYBE_UNUSED]] std::string parse() const;
 
         // const std::queue<Token>& getTokens() const;
         std::queue<Token>&& getTokensByMove();
@@ -27,5 +27,6 @@ namespace evaluator
 		mutable std::queue<Token> tokens;
 
 		static std::pair<std::string, std::queue<Token>> ShuntingYard(const std::string&);
+        static std::queue<Token>&& ShuntingYard(Parser *const);
 	};
 }
