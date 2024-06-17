@@ -61,7 +61,8 @@ void MainWindow::evaluate_expression()
 
     watch.start();
     auto result = evl.feed(expr.toStdString()).evaluate();
-    qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << (watch.nsecsElapsed() / 1e6) << " milliseconds!\n";
+    auto elapsed = watch.nsecsElapsed() / 1e6;
+    qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
     ui->number->setText(QString::number(result));
 
     ready = paren = period = false;
@@ -119,7 +120,7 @@ void MainWindow::handle_operations(QAbstractButton *button)
         return;
     } */
 
-    if(eqn == "Expression") eqn.clear();
+    // if(eqn == "Expression") eqn.clear();
 
     if(!eqn.isEmpty() && !eqn.endsWith(' ')) eqn.append(' ');
     if(!paren) eqn.append(num + ' ');
@@ -186,7 +187,6 @@ void MainWindow::backspace() const
         // text.truncate(text.length() - 1); // OR text.pop_back()
         text.chop(1);
         ui->number->setText(text);
-        // qDebug() << "Backspaced: " << text << '\n';
     }
     if(period && text.length() <= dotPos) period = false; // equivalent to {dotPos >= text.length()} or {!(dotPos > text.length())}
     // if dot is also truncated then make it available again {if index is equal to length then that index is invalid}

@@ -298,8 +298,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Calculator", nullptr));
-        number->setText(QCoreApplication::translate("MainWindow", "1234567890", nullptr));
-        equation->setText(QCoreApplication::translate("MainWindow", "Expression", nullptr));
+        number->setText(QCoreApplication::translate("MainWindow", "Calculator", nullptr));
+        equation->setText(QString());
         D7->setText(QCoreApplication::translate("MainWindow", "7", nullptr));
         D8->setText(QCoreApplication::translate("MainWindow", "8", nullptr));
         D9->setText(QCoreApplication::translate("MainWindow", "9", nullptr));
