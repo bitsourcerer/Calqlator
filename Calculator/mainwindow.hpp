@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_evaluation_clicked(); // main function evaluates built expression
+    void evaluate_expression(); // main function evaluates built expression
     void handle_digits(QAbstractButton*); // for all digits and dot
     void handle_commands(QAbstractButton*); // for commands like clear whole display, reset or backspace
     void handle_operations(QAbstractButton*); // for operations like add, subtract, multiply and divide

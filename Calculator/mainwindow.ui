@@ -60,7 +60,6 @@ border-radius: 5px;</string>
       <font>
        <family>OCR A Extended</family>
        <pointsize>22</pointsize>
-       <weight>50</weight>
        <bold>false</bold>
       </font>
      </property>
@@ -580,7 +579,7 @@ background-color: rgba(128, 128, 20, 0.35);
 border-radius: 5px;</string>
     </property>
     <property name="text">
-     <string>CE</string>
+     <string>AC</string>
     </property>
     <attribute name="buttonGroup">
      <string notr="true">commands</string>
@@ -594,7 +593,7 @@ border-radius: 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>370</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -604,12 +603,12 @@ border-radius: 5px;</string>
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="commands"/>
+  <buttongroup name="operations"/>
   <buttongroup name="digits">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="operations"/>
+  <buttongroup name="commands"/>
  </buttongroups>
 </ui>

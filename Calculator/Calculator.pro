@@ -45,7 +45,7 @@ CONFIG(debug, debug|release) {
 }
 
 LIBS += -L$$SOPATH -lEvaluator
-QMAKE_POST_LINK += $$quote(cp -f $$SOLPATH/libEvaluator.so $$DESTDIR)
+QMAKE_POST_LINK += $$quote(cp -f $$SOPATH/libEvaluator.so $$DESTDIR)
 }
 
 # Default rules for deployment.

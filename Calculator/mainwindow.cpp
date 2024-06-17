@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->operations, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_operations(QAbstractButton*)));
     connect(ui->lparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->rparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
+    connect(ui->evaluation, SIGNAL(clicked()), this, SLOT(evaluate_expression()));
 }
 
 MainWindow::~MainWindow()
@@ -28,14 +29,13 @@ namespace {
 bool ready = false; // to mimic windows's calculator's semantics
 bool period = false; // number has a period (dot)
 bool paren = false; // parentheses just closed, can't allow numbers directly without an operator first
-
-QStack<std::string::size_type> markers;
-QStack<Operand> subresults;
 }
 
+QStack<Operand> subresults;
+QStack<std::string::size_type> markers;
 eval::Evaluator evl;
 
-void MainWindow::on_evaluation_clicked()
+void MainWindow::evaluate_expression()
 {
     // static QString last;
     static QElapsedTimer watch;
@@ -51,8 +51,6 @@ void MainWindow::on_evaluation_clicked()
     expr = expr.trimmed();
     if(!flag) replace_subexpr(expr);
 
-    qDebug() << "Evaluate: " << expr << '\n';
-
     // Mimic WinCalc evaluation on no operation supplied
     /*
      * auto opn = expr.toStdString().find_last_of("+-*%^/");
@@ -63,7 +61,7 @@ void MainWindow::on_evaluation_clicked()
 
     watch.start();
     auto result = evl.feed(expr.toStdString()).evaluate();
-    qDebug() << "Result: " << result << " | Took " << (watch.nsecsElapsed() / 1e6) << " milliseconds!\n";
+    qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << (watch.nsecsElapsed() / 1e6) << " milliseconds!\n";
     ui->number->setText(QString::number(result));
 
     ready = paren = period = false;
@@ -72,7 +70,7 @@ void MainWindow::on_evaluation_clicked()
 void MainWindow::handle_digits(QAbstractButton *button)
 {
     if(paren) { qWarning("Only Operations Allowed!\n"); return; }
-    if(!ready) clear(); ready = true;
+    if(!ready) clear(); ready = true; // ready becomes true nontheless
 
     auto btn = qobject_cast<QPushButton*>(button);
     auto num = ui->number->text();

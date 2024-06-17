@@ -84,31 +84,7 @@ namespace evaluator
 			SQRT = 'r',
 			LOG2 = 'l',
 			LOG10 = 'L'
-		};
-
-		struct OldOperation
-		{
-			enum EVALUATOR_API Type : char // UNUSED
-			{
-                NONE,
-				UNARY,
-				BINARY,
-				FUNCTION
-			} type = Type::NONE;
-
-			union
-			{
-				Functions f;
-				BinaryOPS b;
-				UnaryOPS u;
-                char o;
-			};
-
-			OldOperation() = default;
-			OldOperation(Functions func) : f(func) , type(Type::FUNCTION) { }
-			OldOperation(BinaryOPS bop) : b(bop) , type(Type::BINARY) { }
-			OldOperation(UnaryOPS uop) : u(uop) , type(Type::FUNCTION) { }
-		};
+        };
 
 		extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
 		extern EVALUATOR_API std::unordered_map<operations::UnaryOPS, std::function<Result(Operand)>> unops;

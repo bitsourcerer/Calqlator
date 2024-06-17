@@ -71,17 +71,17 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 SyntaxTree & evaluator::SyntaxTree::build(const std::queue<Token>& tokens)
 {
 	auto toks(tokens);
-	std::list<Token> ltok(toks.size());
-	for (auto &t : ltok)
+    // std::list<Token> ltok(toks.size());
+    /*for (auto &t : ltok)
 	{
 		t = toks.front();
 		toks.pop();
-	}
+    }*/
 
 	std::stack<std::unique_ptr<Expression>> expressions;
-	while (!ltok.empty())
+    while (!toks.empty())
 	{
-		auto current = ltok.front();
+        auto current = toks.front();
 		std::visit([&](const auto &token) {
 			if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operand>)
 				expressions.push(std::make_unique<Number>(token));
@@ -109,7 +109,7 @@ SyntaxTree & evaluator::SyntaxTree::build(const std::queue<Token>& tokens)
 			}
 			else return;
 		}, current);
-		ltok.pop_front();
+        toks.pop();
 	}
 
 	root = std::move(expressions.top()); expressions.pop();

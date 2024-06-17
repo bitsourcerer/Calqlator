@@ -14,11 +14,9 @@ Operand Evaluator::evaluate()
 
 Evaluator& Evaluator::feed(const std::string &str)
 {
-	// TODO: insert return statement here
 	input = str;
 	input = parser.feed(input).parse();
 	tree.build(parser.getTokens());
-	// tree.buildFromVTokens(parser.convertToVTokens()); // todo make main stream
 
 	fed = true;
 	return *this;

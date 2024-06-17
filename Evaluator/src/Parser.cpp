@@ -14,8 +14,6 @@ Parser::Parser(std::string_view exp) : input(exp)
 Parser& Parser::feed(std::string_view exp)
 {
 	input = exp;
-	// numbers.clear();
-	// operations.clear();
 	return *this;
 }
 
@@ -36,6 +34,7 @@ const std::queue<Token>& Parser::getTokens() const
 
 std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string &expression)
 {
+    // Finite State Machine : digits, symbols, letters, parenthesis
 	std::queue<Token> tokens;
 	std::stack<Operation> operations;
 
