@@ -34,7 +34,7 @@ std::string Parser::parse() const
 
 std::queue<Token>&& Parser::getTokensByMove()
 {
-    return std::move(ShuntingYard(this));
+    return ShuntingYard(this);
 }
 
 std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string &expression)

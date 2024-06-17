@@ -15,7 +15,8 @@ Operand Evaluator::evaluate()
 Evaluator& Evaluator::feed(const std::string &str)
 {
 	input = str;
-	input = parser.feed(input).parse();
+    // input = parser.feed(input).parse();
+    parser.feed(str);
     tree.build(parser.getTokensByMove());
 
 	fed = true;
