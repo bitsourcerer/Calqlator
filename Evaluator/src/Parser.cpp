@@ -25,11 +25,17 @@ std::string Parser::parse() const
 	return output;
 }
 
-const std::queue<Token>& Parser::getTokens() const
+// const std::queue<Token>& Parser::getTokens() const
+// {
+// 	// if (tokens.empty()) parse();
+// 	parse();
+// 	return tokens;
+// }
+
+std::queue<Token>&& Parser::getTokensByMove()
 {
-	// if (tokens.empty()) parse();
-	parse();
-	return tokens;
+    parse();
+    return std::move(tokens);
 }
 
 std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string &expression)

@@ -18,7 +18,8 @@ namespace evaluator
 		Parser& feed(std::string_view);
 		std::string parse() const;
 
-		const std::queue<Token>& getTokens() const;
+        // const std::queue<Token>& getTokens() const;
+        std::queue<Token>&& getTokensByMove();
 
 	private:
 		std::string input;
