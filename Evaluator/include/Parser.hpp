@@ -16,7 +16,9 @@ namespace evaluator
 		Parser() = default;
 		Parser(std::string_view);
 		Parser& feed(std::string_view);
-        [[MAYBE_UNUSED]] std::string parse() const;
+        // [[MAYBE_UNUSED]] std::string parse() const;
+        std::queue<Token>&& parse();
+        const std::string& parseStr() const;
 
         // const std::queue<Token>& getTokens() const;
         std::queue<Token>&& getTokensByMove();

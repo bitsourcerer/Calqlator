@@ -17,12 +17,18 @@ Parser& Parser::feed(std::string_view exp)
 	return *this;
 }
 
-std::string Parser::parse() const
+std::queue<Token>&& Parser::parse()
 {
-	auto ret = ShuntingYard(input);
-	output = ret.first;
-	tokens = ret.second;
-	return output;
+    return ShuntingYard(this);
+}
+
+const std::string& Parser::parseStr() const
+{
+    // flaws: may result in recalculation of tokens
+    auto ret = ShuntingYard(input);
+    output = ret.first;
+    tokens = ret.second;
+    return output;
 }
 
 // const std::queue<Token>& Parser::getTokens() const
@@ -34,7 +40,7 @@ std::string Parser::parse() const
 
 std::queue<Token>&& Parser::getTokensByMove()
 {
-    return ShuntingYard(this);
+    return std::move(tokens);
 }
 
 std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string &expression)
@@ -60,7 +66,7 @@ std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string
 					auto o2 = ops.pop();
 					output << o2 << ' ';
 
-					tokens.push(operations.top()); operations.pop();
+                    tokens.push(operations.top()); operations.pop();
 					top = ops.top();
 				}
 			}
@@ -83,7 +89,7 @@ std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string
 				Operand value = std::stod(whole.substr(fn.length() + 1));;
 
 				tokens.push(value);
-				tokens.push(operations.top()); operations.pop();
+                tokens.push(operations.top()); operations.pop();
 
 				output << value << ' ';
 				output << (char)operations::funcids.at(fn);
@@ -100,7 +106,7 @@ std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string
 			{
 				if (ops.empty()) throw std::logic_error("Expression Mismatch");
 				output << ' ' << top;
-				tokens.push(operations.top()); operations.pop(); // UNLOCK
+                tokens.push(operations.top()); operations.pop();
 			}
 		}
 		else if (std::ispunct(current) && current == ','); // pop all operators from operator stack into queue (while its not left paren)
@@ -132,9 +138,8 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
     // Finite State Machine : digits, symbols, letters, parenthesis
     auto &tokens = parser->tokens;
     const auto &expression = parser->input;
-    static std::stack<Operation> operations;
-
-    Stack<std::underlying_type_t<operations::Functions>> ops; // for string version
+    std::stack<Operation> operations;
+    // std::int_fast8_t parens = 0;
 
     for (std::string::size_type i = 0; i != expression.length(); ++i)
     {
@@ -143,15 +148,18 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
         else if (binops.find(static_cast<BinaryOPS>(current)) != binops.end())
         {
             BinaryOPS operation = static_cast<BinaryOPS>(current);
-            if (!ops.empty())
+            if (!operations.empty())
             {
-                auto top = ops.top(); //o2
-                while (!ops.empty() && top != '(' && Precedence::checkPrecedence((BinaryOPS)top, (BinaryOPS)current)) {
+                auto &top = operations.top();
+                // problem to fix here : need some workaround to tell whether the top is not a parentheses (counter makes problem)
+                while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::PAREN)
+                       &&  Precedence::checkPrecedence(std::get<BinaryOPS>(top), operation)) {
                     tokens.push(operations.top()); operations.pop();
-                    top = ops.pop();
+                    if(!operations.empty()) top = operations.top();
+                    else break;
                 }
+                //if(parens < 0) parens = 0;
             }
-            ops.push(current); // o1
             operations.push(operation);
         }
         else if (std::isalpha(current)) // combine all chars until they are alphabets
@@ -175,15 +183,17 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
                 i += whole.length() - 1;
             }
         }
-        else if (current == '(') ops.push('(');
+        else if (current == '(') operations.push(Symbols::PAREN);
         else if (current == ')') // asserting whether operator stack is empty can indicate paren mismatch
         {
-            decltype(ops)::value_type top;
-            if (ops.empty()) continue;
-            for (top = ops.pop(); top != '('; top = ops.pop())
+            if (operations.empty()) continue;
+            for(auto top = operations.top();
+                 !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::PAREN);
+                top = operations.top(), operations.pop())
             {
-                if (ops.empty()) throw std::logic_error("Expression Mismatch");
-                tokens.push(operations.top()); operations.pop(); // UNLOCK
+                operations.pop();
+                if (operations.empty()) throw std::logic_error("Expression Mismatch");
+                tokens.push(top);
             }
         }
         else if (std::ispunct(current) && current == ','); // pop all operators from operator stack into queue (while its not left paren)
@@ -197,10 +207,10 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
         }
     }
 
-    while (!ops.empty())
+    while (!operations.empty())
     {
-        ops.pop();
-        tokens.push(operations.top()); operations.pop();
+        tokens.push(operations.top());
+        operations.pop();
     }
 
     return std::move(tokens);

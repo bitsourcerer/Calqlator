@@ -86,11 +86,16 @@ namespace evaluator
 			LOG10 = 'L'
         };
 
+        enum EVALUATOR_API Symbols : OperationEnumeratorUnderlyingType
+        {
+            PAREN
+        };
+
 		extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
 		extern EVALUATOR_API std::unordered_map<operations::UnaryOPS, std::function<Result(Operand)>> unops;
 		extern EVALUATOR_API const std::map<std::string_view, Functions> funcids;
 		extern EVALUATOR_API const std::unordered_map<Functions, std::function<Result(Operand)>> funcs;
 	}
-	using Operation = std::variant<std::monostate, operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
-	using Token = std::variant<Operand, Operation>;
+    using Operation = std::variant<std::monostate, operations::UnaryOPS, operations::BinaryOPS, operations::Functions, operations::Symbols>;
+    using Token = std::variant<Operand, Operation>;
 }
