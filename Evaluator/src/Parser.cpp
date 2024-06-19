@@ -138,7 +138,7 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
     // Finite State Machine : digits, symbols, letters, parenthesis
     auto &tokens = parser->tokens;
     const auto &expression = parser->input;
-    std::stack<Operation> operations;
+    std::stack<UnifiedToken> operations;
     // std::int_fast8_t parens = 0;
 
     for (std::string::size_type i = 0; i != expression.length(); ++i)
@@ -150,12 +150,12 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
             BinaryOPS operation = static_cast<BinaryOPS>(current);
             if (!operations.empty())
             {
-                auto &top = operations.top();
+                auto top = operations.top();
                 // problem to fix here : need some workaround to tell whether the top is not a parentheses (counter makes problem)
                 while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::PAREN)
-                       &&  Precedence::checkPrecedence(std::get<BinaryOPS>(top), operation)) {
-                    tokens.push(operations.top()); operations.pop();
-                    if(!operations.empty()) top = operations.top();
+                       &&  Precedence::checkPrecedence(std::get<BinaryOPS>(std::get<Operation>(top)), operation)) {
+                    tokens.push(std::get<Operation>(operations.top())); operations.pop();
+                    if(!operations.empty()) top = std::get<Operation>(operations.top());
                     else break;
                 }
                 //if(parens < 0) parens = 0;
@@ -178,7 +178,7 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
                 Operand value = std::stod(whole.substr(fn.length() + 1));;
 
                 tokens.push(value);
-                tokens.push(operations.top()); operations.pop();
+                tokens.push(std::get<Operation>(operations.top())); operations.pop();
 
                 i += whole.length() - 1;
             }
@@ -193,7 +193,7 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
             {
                 operations.pop();
                 if (operations.empty()) throw std::logic_error("Expression Mismatch");
-                tokens.push(top);
+                tokens.push(std::get<Operation>(top));
             }
         }
         else if (std::ispunct(current) && current == ','); // pop all operators from operator stack into queue (while its not left paren)
@@ -209,7 +209,7 @@ std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
 
     while (!operations.empty())
     {
-        tokens.push(operations.top());
+        tokens.push(std::get<Operation>(operations.top()));
         operations.pop();
     }
 

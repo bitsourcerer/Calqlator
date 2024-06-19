@@ -96,6 +96,8 @@ namespace evaluator
 		extern EVALUATOR_API const std::map<std::string_view, Functions> funcids;
 		extern EVALUATOR_API const std::unordered_map<Functions, std::function<Result(Operand)>> funcs;
 	}
-    using Operation = std::variant<std::monostate, operations::UnaryOPS, operations::BinaryOPS, operations::Functions, operations::Symbols>;
+
+    using Operation = std::variant</* std::monostate, */operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
+    using UnifiedToken = std::variant<Operation, operations::Symbols>;
     using Token = std::variant<Operand, Operation>;
 }
