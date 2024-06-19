@@ -1,6 +1,8 @@
 #pragma once
 
 #include "common.h"
+
+#include <memory>
 // #define interface struct
 
 namespace evaluator

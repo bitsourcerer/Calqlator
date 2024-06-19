@@ -1,10 +1,12 @@
-#include <algorithm>
+// #include <algorithm>
 #include <limits>
 #include <stack>
 #include <list>
+#include <sstream>
+#include <cassert>
 
-#include "SyntaxTree.hpp"
 #include "Parser.hpp"
+#include "SyntaxTree.hpp"
 
 using namespace evaluator;
 using namespace evaluator::operations;
@@ -19,12 +21,12 @@ SyntaxTree::SyntaxTree(std::string_view expression) : SyntaxTree()
 }
 
 /*
-evaluator::SyntaxTree::SyntaxTree(const std::queue<Token> &tokens)
+evaluator::SyntaxTree::SyntaxTree(const Parser::TokenQueue &tokens)
 {
     build(tokens);
 }*/
 
-evaluator::SyntaxTree::SyntaxTree(std::queue<Token> &&tokens)
+evaluator::SyntaxTree::SyntaxTree(Parser::TokenQueue &&tokens)
 {
     build(std::move(tokens));
 }
@@ -74,7 +76,7 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 	return *this;
 }
 
-SyntaxTree& evaluator::SyntaxTree::build(std::queue<Token>&& tokens)
+SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
 {
     // auto &&toks(std::move(tokens)); // very important
 
@@ -118,7 +120,7 @@ SyntaxTree& evaluator::SyntaxTree::build(std::queue<Token>&& tokens)
 }
 
 /*
-SyntaxTree& evaluator::SyntaxTree::build(const std::queue<Token>& tokens)
+SyntaxTree& evaluator::SyntaxTree::build(const Parser::TokenQueue& tokens)
 {
     // auto toks(std::move(tokens)); // very important
 

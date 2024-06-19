@@ -1,6 +1,7 @@
 #include <sstream>
-#include <future>
+#include <stack>
 
+#include "common.h"
 #include "Parser.hpp"
 #include "Stack.hpp"
 
@@ -17,7 +18,7 @@ Parser& Parser::feed(std::string_view exp)
 	return *this;
 }
 
-std::queue<Token>&& Parser::parse()
+Parser::TokenQueue&& Parser::parse()
 {
     return ShuntingYard(this);
 }
@@ -38,15 +39,15 @@ const std::string& Parser::parseStr() const
 // 	return tokens;
 // }
 
-std::queue<Token>&& Parser::getTokensByMove()
+Parser::TokenQueue&& Parser::getTokensByMove()
 {
     return std::move(tokens);
 }
 
-std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string &expression)
+std::pair<std::string, Parser::TokenQueue> Parser::ShuntingYard(const std::string &expression)
 {
     // Finite State Machine : digits, symbols, letters, parenthesis
-    std::queue<Token> tokens;
+    Parser::TokenQueue tokens;
     static std::stack<Operation> operations;
 
 	std::ostringstream output; // for string version
@@ -133,7 +134,7 @@ std::pair<std::string, std::queue<Token>> Parser::ShuntingYard(const std::string
 	return { ret, tokens };
 }
 
-std::queue<Token>&& Parser::ShuntingYard(Parser *const parser)
+Parser::TokenQueue&& Parser::ShuntingYard(Parser *const parser)
 {
     // Finite State Machine : digits, symbols, letters, parenthesis
     auto &tokens = parser->tokens;

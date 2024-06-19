@@ -6,18 +6,9 @@
 
 // All standard includes : BEGIN
 #include <functional>
-#include <memory>
-#include <exception>
-#include <cassert>
-#include <stdexcept>
-#include <iostream>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <map>
-#include <cctype>
-#include <numeric>
-#include <algorithm>
 #include <string_view>
 #include <variant>
 // All standard includes : END
@@ -42,18 +33,6 @@ constexpr const static bool debug = DEBUG;
 
 namespace evaluator
 {
-	class nullstream_t : public std::ostringstream
-	{
-		template <typename T>
-        friend nullstream_t& operator << (nullstream_t &ns, T) { return ns; }
-	} static nullstream;
-
-#ifndef NDEBUG
-	static std::ostream& dbglog = std::cout;
-#else
-	static std::ostream& dbglog = nullstream;
-#endif // !NDEBUG
-
 	namespace operations
 	{
 		using OperationEnumeratorUnderlyingType = char;
@@ -91,8 +70,8 @@ namespace evaluator
             PAREN
         };
 
-		extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
-		extern EVALUATOR_API std::unordered_map<operations::UnaryOPS, std::function<Result(Operand)>> unops;
+        extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
+        extern EVALUATOR_API std::unordered_map<operations::UnaryOPS, std::function<Result(Operand)>> unops;
 		extern EVALUATOR_API const std::map<std::string_view, Functions> funcids;
 		extern EVALUATOR_API const std::unordered_map<Functions, std::function<Result(Operand)>> funcs;
 	}

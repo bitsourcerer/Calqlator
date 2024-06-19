@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Expression.hpp"
 
 using namespace evaluator;
@@ -36,7 +37,7 @@ Result Binary::evaluate() const
 	Result ret = 0.0;
 	if (binops.find(operation) != binops.end())
 	{
-		ret = binops[operation](l, r);
+        ret = binops[operation](l, r);
 	}
 	else throw std::domain_error("Unlisted Operation Used!");
 	return ret;

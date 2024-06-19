@@ -11,13 +11,13 @@ namespace evaluator
 	public:
 		SyntaxTree();
 		SyntaxTree(std::string_view expression);
-        // SyntaxTree(const std::queue<Token>&);
-        SyntaxTree(std::queue<Token>&&);
+        // SyntaxTree(const Parser::TokenQueue&);
+        SyntaxTree(Parser::TokenQueue&&);
 
 		SyntaxTree& build(std::string_view expression);
 
-        // SyntaxTree& build(const std::queue<Token> &tokens);
-        SyntaxTree& build(std::queue<Token> &&tokens);
+        // SyntaxTree& build(const Parser::TokenQueue &tokens);
+        SyntaxTree& build(Parser::TokenQueue &&tokens);
 
 		Result evaluate() const;
 
