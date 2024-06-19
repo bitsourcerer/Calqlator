@@ -4,6 +4,7 @@
 #include <list>
 #include <sstream>
 #include <cassert>
+#include <cctype>
 
 #include "Parser.hpp"
 #include "SyntaxTree.hpp"

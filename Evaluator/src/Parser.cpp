@@ -1,5 +1,6 @@
 #include <sstream>
 #include <stack>
+#include <cctype>
 
 #include "common.h"
 #include "Parser.hpp"
