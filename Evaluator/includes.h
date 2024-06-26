@@ -9,7 +9,7 @@
 #include "include/Precedence.hpp"
 #include "include/SyntaxTree.hpp"
 
-namespace eval = evaluator;
+namespace evl = evaluator;
 namespace ops = evaluator::operations;
 
 #endif // INCLUDES_H

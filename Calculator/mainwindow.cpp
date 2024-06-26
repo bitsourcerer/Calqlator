@@ -33,7 +33,7 @@ bool paren = false; // parentheses just closed, can't allow numbers directly wit
 
 QStack<Operand> subresults;
 QStack<std::string::size_type> markers;
-eval::Evaluator evl;
+evl::Evaluator eval;
 
 void MainWindow::evaluate_expression()
 {
@@ -60,7 +60,7 @@ void MainWindow::evaluate_expression()
      */
 
     watch.start();
-    auto result = evl.feed(expr.toStdString()).evaluate();
+    auto result = eval.feed(expr.toStdString()).evaluate();
     auto elapsed = watch.nsecsElapsed() / 1e6;
     qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
     ui->number->setText(QString::number(result));
@@ -83,11 +83,14 @@ void MainWindow::handle_digits(QAbstractButton *button)
     }
     // else if(btn->objectName() == "D0" && num == btn->text()) return; // if already 0 { can be optimized out by simply removing the line }
 
-    ui->number->setText(num + btn->text());
+    // ui->number->setText(num + btn->text());
+    num += btn->text();
 
     if(!period && num.startsWith('0'))
-        ui->number->setText(ui->number->text().mid(1));
-    // num.remove(0, 1);
+        num.remove(0, 1);
+        // num.mid(1);
+    ui->number->setText(num);
+    // num.removefirst(); // only since Qt 6.5
 }
 
 void MainWindow::handle_commands(QAbstractButton *button)
@@ -147,7 +150,7 @@ void MainWindow::handle_parentheses()
         if(!eqn.endsWith(btn->text())) eqn.append(num + ' ');
 
         subexpr = eqn.mid(markers.pop()) + ')';
-        auto result = evl.feed(subexpr.toStdString()).evaluate();
+        auto result = eval.feed(subexpr.toStdString()).evaluate();
         subresults.push(result);
         ui->number->setText(QString::number(result));
 
