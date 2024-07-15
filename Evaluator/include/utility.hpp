@@ -1,5 +1,7 @@
 #pragma once
 
+
+// TODO : Switch both to long double
 typedef double operand_t;
 typedef double result_t;
 

@@ -11,6 +11,8 @@
 #include <map>
 #include <string_view>
 #include <variant>
+#include <iosfwd>
+#include <stack>
 // All standard includes : END
 
 #ifndef NDEBUG
@@ -79,4 +81,6 @@ namespace evaluator
     using Operation = std::variant</* std::monostate, */operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
     using UnifiedToken = std::variant<Operation, operations::Symbols>;
     using Token = std::variant<Operand, Operation>;
+
+    template <typename T> using StackV = std::stack<T, std::vector<T>>;
 }

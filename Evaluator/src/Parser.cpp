@@ -140,7 +140,7 @@ Parser::TokenQueue&& Parser::ShuntingYard(Parser *const parser)
     // Finite State Machine : digits, symbols, letters, parenthesis
     auto &tokens = parser->tokens;
     const auto &expression = parser->input;
-    std::stack<UnifiedToken> operations;
+    std::stack<UnifiedToken, std::vector<UnifiedToken>> operations;
     // std::int_fast8_t parens = 0;
 
     for (std::string::size_type i = 0; i != expression.length(); ++i)

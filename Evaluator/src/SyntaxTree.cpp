@@ -81,7 +81,7 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
 {
     // auto &&toks(std::move(tokens)); // very important
 
-    static std::stack<std::unique_ptr<Expression>> expressions;
+    static StackV<std::unique_ptr<Expression>> expressions;
 
     while (!tokens.empty())
     {
