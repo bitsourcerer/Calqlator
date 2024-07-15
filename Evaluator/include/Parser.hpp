@@ -14,23 +14,19 @@ namespace evaluator
     {
 	public:
         using TokenQueue = std::queue<Token>; // using std::list as backend increases time of the first evaluation and doesnt yield much
+        template <typename T> using VecStack = std::stack<T, std::vector<T>>;
 
 		Parser() = default;
 		Parser(std::string_view);
 		Parser& feed(std::string_view);
         // [[MAYBE_UNUSED]] std::string parse() const;
         TokenQueue&& parse();
-        const std::string& parseStr() const;
-
-        // const std::queue<Token>& getTokens() const;
-        TokenQueue&& getTokensByMove();
+        TokenQueue&& getTokens();
 
 	private:
 		std::string input;
-		mutable std::string output;
+        // mutable std::string output; // removed permanently
         mutable TokenQueue tokens;
-
-        static std::pair<std::string, TokenQueue> ShuntingYard(const std::string&);
         static TokenQueue&& ShuntingYard(Parser *const);
 	};
 }

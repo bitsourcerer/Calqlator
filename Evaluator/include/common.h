@@ -81,6 +81,4 @@ namespace evaluator
     using Operation = std::variant</* std::monostate, */operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
     using UnifiedToken = std::variant<Operation, operations::Symbols>;
     using Token = std::variant<Operand, Operation>;
-
-    template <typename T> using StackV = std::stack<T, std::vector<T>>;
 }

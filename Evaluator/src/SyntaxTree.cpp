@@ -41,7 +41,7 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 	constexpr auto Invalid = std::numeric_limits<Operand>::quiet_NaN();
 
 	// only if expression is container of Tokens it can be easier to parse
-	std::stack<std::unique_ptr<Expression>> exp;
+    Parser::VecStack<std::unique_ptr<Expression>> exp;
 	std::string token;
 	char operation = 0;
 	while (strm >> token)
@@ -81,7 +81,7 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
 {
     // auto &&toks(std::move(tokens)); // very important
 
-    static StackV<std::unique_ptr<Expression>> expressions;
+    static Parser::VecStack<std::unique_ptr<Expression>> expressions;
 
     while (!tokens.empty())
     {

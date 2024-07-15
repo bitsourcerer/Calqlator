@@ -24,5 +24,4 @@ namespace evaluator
 	private:
 		NodePtr root;
 	};
-
 }
