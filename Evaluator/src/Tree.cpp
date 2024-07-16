@@ -7,7 +7,7 @@
 #include <cctype>
 
 #include "Parser.hpp"
-#include "SyntaxTree.hpp"
+#include "Tree.hpp"
 
 using namespace evaluator;
 using namespace evaluator::operations;

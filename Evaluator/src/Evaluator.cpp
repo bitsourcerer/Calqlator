@@ -3,7 +3,7 @@
 
 using namespace evaluator;
 
-Evaluator::Evaluator(const std::string &infix) : input(infix), fed(true), parser(infix), tree(parser.parse())
+Evaluator::Evaluator(const std::string &infix) : input(infix), fed(true), parser(infix), tree(parser.parse()), lexer(infix)
 {
 }
 

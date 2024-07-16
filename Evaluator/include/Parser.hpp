@@ -1,11 +1,12 @@
 #pragma once
 
 #include <queue>
-#include <type_traits>
-#include <list>
+// #include <type_traits>
+// #include <list>
 #include <utility>
 
 #include "common.h"
+#include "Lexer.hpp"
 #include "Precedence.hpp"
 
 namespace evaluator
@@ -29,6 +30,7 @@ namespace evaluator
         // mutable std::string output; // removed permanently
         mutable TokenQueue tokens;
         // static TokenQueue&& ShuntingYard(Parser *const);
+        Parser::TokenQueue&& ShuntinYard(Lexer::TokenQueue&&);
 	};
 
     Parser::TokenQueue&& ShuntingYard(Parser&);

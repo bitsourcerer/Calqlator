@@ -1,8 +1,9 @@
 #pragma once
 
 #include "common.h"
+#include "Lexer.hpp"
 #include "Parser.hpp"
-#include "SyntaxTree.hpp"
+#include "Tree.hpp"
 
 namespace evaluator
 {
@@ -20,6 +21,7 @@ namespace evaluator
 		std::string input;
 		Operand output;
 
+        Lexer lexer;
 		Parser parser;
 		SyntaxTree tree;
 	};

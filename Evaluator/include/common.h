@@ -71,6 +71,7 @@ namespace evaluator
         {
             LPAREN = '(',
             RPAREN = ')',
+            COMMA = ',',
             PERIOD = '.'
         };
 
@@ -81,6 +82,6 @@ namespace evaluator
 	}
 
     using Operation = std::variant</* std::monostate, */operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
-    using UnifiedToken = std::variant<Operation, operations::Symbols>;
+    using UnifiedToken = std::variant<Operation, operations::Symbols, Operand>;
     using Token = std::variant<Operand, Operation>;
 }

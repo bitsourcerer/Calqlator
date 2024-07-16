@@ -5,6 +5,12 @@
 using namespace evaluator;
 using namespace evaluator::operations;
 
+Result Factorial(Operand op) noexcept
+{
+    if(op == 0) return 1;
+    return op * Factorial(op - 1);
+}
+
 EVALUATOR_API std::unordered_map<BinaryOPS, std::function<Result(Operand, Operand)>> operations::binops = {
 	{ BinaryOPS::SUBTRACTION, std::minus<operand_t>() },
 	{ BinaryOPS::ADDITION, std::plus<operand_t>() },
@@ -13,6 +19,11 @@ EVALUATOR_API std::unordered_map<BinaryOPS, std::function<Result(Operand, Operan
 	{ BinaryOPS::EXPONENTIATION, std::pow<operand_t, operand_t> },
 	{ BinaryOPS::MODULATION, std::fmod<operand_t, operand_t> }, // std::modulus<operand_t>()
 	{ BinaryOPS::UNSPECIFIED, nullptr }
+};
+
+EVALUATOR_API std::unordered_map<UnaryOPS, std::function<Result(Operand)>> operations::unops = {
+    { UnaryOPS::NEGATION, std::negate<operand_t>() },
+    { UnaryOPS::FACTORIAL, Factorial }
 };
 
 EVALUATOR_API const std::unordered_map<operations::Functions, std::function<Result(Operand)>> operations::funcs

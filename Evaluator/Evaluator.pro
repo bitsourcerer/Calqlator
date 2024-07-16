@@ -11,8 +11,10 @@ CONFIG += c++17
 
 SOURCES += \
     dllmain.cpp \
+    src/Lexer.cpp \
+    src/Tree.cpp \
 	src/common.cpp src/Evaluator.cpp src/Parser.cpp \
-	src/SyntaxTree.cpp src/Precedence.cpp src/Expression.cpp \
+	src/Precedence.cpp src/Expression.cpp \
 	src/utility.cpp
 
 HEADERS += \
@@ -20,8 +22,10 @@ HEADERS += \
     Eval.h \
 	framework.h \
     include/Evaluator.hpp \
+    include/Lexer.hpp \
+    include/Tree.hpp \
 	include/common.h include/Parser.hpp \
-	include/SyntaxTree.hpp include/Precedence.hpp include/Expression.hpp \
+	include/Precedence.hpp include/Expression.hpp \
 	include/utility.hpp \
 	Stack.hpp
 
