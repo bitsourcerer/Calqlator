@@ -11,10 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setFixedSize(370, 410);
+    // this->setFixedSize(370, 410);
     connect(ui->digits, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_digits(QAbstractButton*)));
     connect(ui->commands, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_commands(QAbstractButton*)));
     connect(ui->operations, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_operations(QAbstractButton*)));
+    connect(ui->functions, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(handle_functions(QAbstractButton*)));
     connect(ui->lparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->rparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->evaluation, SIGNAL(clicked()), this, SLOT(evaluate_expression()));
@@ -132,6 +133,21 @@ void MainWindow::handle_operations(QAbstractButton *button)
     paren = false;
     ready = false;
     // ui->equation->setText(eqn + num + " " + btn->text());
+}
+
+void MainWindow::handle_functions(QAbstractButton *button)
+{
+    if(paren) return;
+    auto btn = qobject_cast<QPushButton*>(button);
+    auto eqn = ui->equation->text();
+    auto num = ui->number->text();
+
+    if(!eqn.isEmpty() && !eqn.endsWith(' ')) eqn.push_back(' ');
+    eqn += btn->objectName() + '(' + num + ')';
+    ui->equation->setText(eqn);
+
+    paren = true;
+    ready = true;
 }
 
 void MainWindow::handle_parentheses()

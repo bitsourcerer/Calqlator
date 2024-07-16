@@ -19,7 +19,8 @@ HEADERS += \
     API.h \
     Eval.h \
 	framework.h \
-	include/common.h include/Evaluator.h include/Parser.hpp \
+    include/Evaluator.hpp \
+	include/common.h include/Parser.hpp \
 	include/SyntaxTree.hpp include/Precedence.hpp include/Expression.hpp \
 	include/utility.hpp \
 	Stack.hpp

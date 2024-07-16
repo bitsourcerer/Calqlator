@@ -9,6 +9,7 @@ namespace evaluator
 	class EVALUATOR_API Evaluator
 	{
 	public:
+        using TokenQueue = std::queue<UnifiedToken>;
 		Evaluator() = default;
 		Evaluator(const std::string&);
 		Operand evaluate();

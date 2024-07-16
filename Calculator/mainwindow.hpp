@@ -21,6 +21,7 @@ private slots:
     void handle_digits(QAbstractButton*); // for all digits and dot
     void handle_commands(QAbstractButton*); // for commands like clear whole display, reset or backspace
     void handle_operations(QAbstractButton*); // for operations like add, subtract, multiply and divide
+    void handle_functions(QAbstractButton*); // for functions like sin, cos, tan, log and natural logs
     void handle_parentheses(); // for parenthesis exclusively
 
 private:

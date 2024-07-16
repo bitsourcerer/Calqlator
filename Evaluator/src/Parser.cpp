@@ -21,7 +21,7 @@ Parser& Parser::feed(std::string_view exp)
 
 Parser::TokenQueue&& Parser::parse()
 {
-    return ShuntingYard(this);
+    return ShuntingYard(*this);
 }
 
 Parser::TokenQueue&& Parser::getTokens()
@@ -29,36 +29,35 @@ Parser::TokenQueue&& Parser::getTokens()
     return std::move(tokens);
 }
 
-Parser::TokenQueue&& Parser::ShuntingYard(Parser *const parser)
+Parser::TokenQueue&& evaluator::ShuntingYard(Parser &parser)
 {
     // Finite State Machine : digits, symbols, letters, parenthesis
-    auto &tokens = parser->tokens;
-    const auto &expression = parser->input;
-    VecStack<UnifiedToken> operations;
-    // std::int_fast8_t parens = 0;
+    auto &tokens = parser.tokens;
+    const auto &expression = parser.input;
+    Parser::VecStack<UnifiedToken> operations;
 
     for (std::string::size_type i = 0; i != expression.length(); ++i)
     {
         const std::string::value_type current = expression.at(i);
         if (std::isspace(current)) continue;
-        else if (binops.find(static_cast<BinaryOPS>(current)) != binops.end())
-        {
+        else if (
             BinaryOPS operation = static_cast<BinaryOPS>(current);
+            binops.find(operation) != binops.end()
+        )
+        {
             if (!operations.empty())
             {
                 auto top = operations.top();
-                // problem to fix here : need some workaround to tell whether the top is not a parentheses (counter makes problem)
-                while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::PAREN)
+                while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN)
                        &&  Precedence::checkPrecedence(std::get<BinaryOPS>(std::get<Operation>(top)), operation)) {
                     tokens.push(std::get<Operation>(operations.top())); operations.pop();
                     if(!operations.empty()) top = std::get<Operation>(operations.top());
                     else break;
                 }
-                //if(parens < 0) parens = 0;
             }
             operations.push(operation);
         }
-        else if (std::isalpha(current)) // combine all chars until they are alphabets
+        else if (std::isalpha(current))
         {
             // lets assume the first token after any alphabet is '(' sqrt(10.0678)
             auto ite = std::find(expression.cbegin() + i, expression.cend(), ')'); // closing of function
@@ -66,7 +65,7 @@ Parser::TokenQueue&& Parser::ShuntingYard(Parser *const parser)
             auto fn = expression.substr(i, start - i);
             auto itb = expression.cbegin() + i;
 
-            if (operations::funcids.find(fn) == funcids.end()) continue; // not a registered function (not found in registry map
+            if (operations::funcids.find(fn) == funcids.end()) continue; // not a registered function (not found in registry map)
 
             operations.push(funcids.at(fn));
             {
@@ -79,12 +78,12 @@ Parser::TokenQueue&& Parser::ShuntingYard(Parser *const parser)
                 i += whole.length() - 1;
             }
         }
-        else if (current == '(') operations.push(Symbols::PAREN);
+        else if (current == '(') operations.push(Symbols::LPAREN);
         else if (current == ')') // asserting whether operator stack is empty can indicate paren mismatch
         {
             if (operations.empty()) continue;
             for(auto top = operations.top();
-                 !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::PAREN);
+                 !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN);
                 top = operations.top(), operations.pop())
             {
                 operations.pop();

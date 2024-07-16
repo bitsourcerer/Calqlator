@@ -10,7 +10,7 @@
 #include "include/SyntaxTree.hpp"
 */
 
-#include "include/Evaluator.h"
+#include "include/Evaluator.hpp"
 
 namespace evl = evaluator;
 namespace ops = evaluator::operations;

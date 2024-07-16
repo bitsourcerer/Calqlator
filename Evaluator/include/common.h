@@ -69,7 +69,9 @@ namespace evaluator
 
         enum EVALUATOR_API Symbols : OperationEnumeratorUnderlyingType
         {
-            PAREN
+            LPAREN = '(',
+            RPAREN = ')',
+            PERIOD = '.'
         };
 
         extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
