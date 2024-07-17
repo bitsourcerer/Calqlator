@@ -23,6 +23,7 @@ namespace evaluator
 		Parser& feed(std::string_view);
         // [[MAYBE_UNUSED]] std::string parse() const;
         TokenQueue&& parse();
+        Parser::TokenQueue&& parse(Lexer::TokenQueue&&);
         TokenQueue&& getTokens();
 
 	private:
@@ -30,7 +31,6 @@ namespace evaluator
         // mutable std::string output; // removed permanently
         mutable TokenQueue tokens;
         // static TokenQueue&& ShuntingYard(Parser *const);
-        Parser::TokenQueue&& ShuntinYard(Lexer::TokenQueue&&);
 	};
 
     Parser::TokenQueue&& ShuntingYard(Parser&);

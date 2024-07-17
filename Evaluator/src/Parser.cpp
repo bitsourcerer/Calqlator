@@ -110,3 +110,30 @@ Parser::TokenQueue&& evaluator::ShuntingYard(Parser &parser)
 
     return std::move(tokens);
 }
+
+Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
+{
+    Parser::VecStack<UnifiedToken> operations;
+
+    while(!lexed.empty())
+    {
+        auto &&current = std::move(lexed.front());
+        std::visit([&](auto &&token){
+            if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Operand>)
+            {
+                tokens.push(token);
+            }
+            else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Operation>)
+            {
+                std::visit([&](auto &&operation){
+                    tokens.push(operation);
+                }, std::move(token));
+            }
+            else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Symbols>)
+            {
+                if(token == Symbols::LPAREN);
+            }
+        }, std::move(current));
+        lexed.pop();
+    }
+}

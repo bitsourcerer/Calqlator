@@ -3,7 +3,7 @@
 
 namespace evaluator
 {
-	enum OperatorPrecedence : std::underlying_type_t<operations::BinaryOPS>
+enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::underlying_type_t<operations::BinaryOPS>
 	{
 		MIN = 0,
 		SUB = 1,
@@ -12,22 +12,25 @@ namespace evaluator
 		DIV = 2,
 		EXP = 3,
 		MOD = 4,
+        UNR = 5, // for Unary Operations
 		UNK, // UNKNOWN
 		MAX // Maximum (for parenthesized subexpressions)
 	};
 
 	struct EVALUATOR_API Precedence // For Priority Queue
 	{
-		static const std::map < operations::BinaryOPS, OperatorPrecedence > precedence;
+        using Operator = std::variant<operations::BinaryOPS, operations::UnaryOPS>;
+        static const std::map < Operator, OperatorPrecedence > precedenceTable;
+        static std::greater_equal<OperatorPrecedence> comparator;
 
 		// Precedence(const decltype(precedence) &precMap) : precedence(precMap) { }
-		static bool checkPrecedence(operations::BinaryOPS left, operations::BinaryOPS right)
+        static bool checkPrecedence(Operator left, Operator right)
 			// check if left has greater or equal precedence to right
 		{
-			const auto& lop = precedence.find(left)->second;
-			const auto& rop = precedence.find(right)->second;
+            const auto& lop = precedenceTable.find(left)->second;
+            const auto& rop = precedenceTable.find(right)->second;
 			// return std::less<OperatorPrecedence>{}(lop, rop);
-			return std::greater_equal<OperatorPrecedence>{}(lop, rop);
+            return comparator(lop, rop);
 
 			/*int precedence = 0;
 			for (const auto& [k, v] : prec)
