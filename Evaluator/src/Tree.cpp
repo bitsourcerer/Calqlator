@@ -101,7 +101,8 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
                     }
                     else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::UnaryOPS>)
                     {
-                        expressions.push(std::make_unique<Unary>(888.888, operation));
+                        auto operand = std::move(expressions.top());
+                        expressions.push(std::make_unique<Unary>(std::move(operand), operation));
                     }
                     else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::Functions>)
                     {

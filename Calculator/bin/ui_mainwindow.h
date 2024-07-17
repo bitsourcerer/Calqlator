@@ -54,7 +54,7 @@ public:
     QPushButton *division;
     QPushButton *clear;
     QPushButton *log10;
-    QPushButton *SQRT;
+    QPushButton *sqrt;
     QPushButton *tan;
     QPushButton *loge;
     QPushButton *RANDOM;
@@ -67,10 +67,10 @@ public:
     QPushButton *POW2;
     QStatusBar *statusbar;
     QMenuBar *menuBar;
-    QButtonGroup *digits;
     QButtonGroup *commands;
-    QButtonGroup *functions;
     QButtonGroup *operations;
+    QButtonGroup *functions;
+    QButtonGroup *digits;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -300,10 +300,11 @@ public:
         log10->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
-        SQRT = new QPushButton(centralwidget);
-        SQRT->setObjectName("SQRT");
-        SQRT->setGeometry(QRect(210, 280, 50, 40));
-        SQRT->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
+        sqrt = new QPushButton(centralwidget);
+        functions->addButton(sqrt);
+        sqrt->setObjectName("sqrt");
+        sqrt->setGeometry(QRect(210, 280, 50, 40));
+        sqrt->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         tan = new QPushButton(centralwidget);
@@ -417,7 +418,7 @@ public:
         division->setText(QCoreApplication::translate("MainWindow", "/", nullptr));
         clear->setText(QCoreApplication::translate("MainWindow", "AC", nullptr));
         log10->setText(QCoreApplication::translate("MainWindow", "log", nullptr));
-        SQRT->setText(QCoreApplication::translate("MainWindow", "sqrt", nullptr));
+        sqrt->setText(QCoreApplication::translate("MainWindow", "sqrt", nullptr));
         tan->setText(QCoreApplication::translate("MainWindow", "tan", nullptr));
         loge->setText(QCoreApplication::translate("MainWindow", "ln", nullptr));
         RANDOM->setText(QCoreApplication::translate("MainWindow", "rand", nullptr));

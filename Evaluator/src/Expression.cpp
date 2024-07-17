@@ -13,17 +13,17 @@ Result Number::evaluate() const noexcept
 	return value;
 }
 
-Unary::Unary(Number _value, char _operator) : value(_value), operation(static_cast<operations::UnaryOPS>(_operator))
+Unary::Unary(std::unique_ptr<Expression> _value, char _operator) : value(std::move(_value)), operation(static_cast<operations::UnaryOPS>(_operator))
 {
 }
 
-evaluator::Unary::Unary(Number val, UnaryOPS op) : value(val), operation(op)
+evaluator::Unary::Unary(std::unique_ptr<Expression> val, UnaryOPS op) : value(std::move(val)), operation(op)
 {
 }
 
 Result Unary::evaluate() const noexcept
 {
-	return operation == '-' ? -value.evaluate() : value.evaluate();
+    return operation == '-' ? -value->evaluate() : value->evaluate();
 }
 
 Binary::Binary(VExpression lhs, VExpression rhs, BinaryOPS oper) : left(std::move(lhs)), right(std::move(rhs))

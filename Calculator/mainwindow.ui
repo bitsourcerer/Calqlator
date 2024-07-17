@@ -606,7 +606,7 @@ border-radius: 5px;</string>
      <string notr="true">functions</string>
     </attribute>
    </widget>
-   <widget class="QPushButton" name="SQRT">
+   <widget class="QPushButton" name="sqrt">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -623,6 +623,9 @@ border-radius: 5px;</string>
     <property name="text">
      <string>sqrt</string>
     </property>
+    <attribute name="buttonGroup">
+     <string notr="true">functions</string>
+    </attribute>
    </widget>
    <widget class="QPushButton" name="tan">
     <property name="geometry">
@@ -837,13 +840,13 @@ border-radius: 5px;</string>
  </resources>
  <connections/>
  <buttongroups>
+  <buttongroup name="commands"/>
+  <buttongroup name="operations"/>
+  <buttongroup name="functions"/>
   <buttongroup name="digits">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="commands"/>
-  <buttongroup name="functions"/>
-  <buttongroup name="operations"/>
  </buttongroups>
 </ui>

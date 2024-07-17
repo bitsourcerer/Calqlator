@@ -116,6 +116,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
     // Consult Shunting Yard Algorithm's Wiki!
     Parser::VecStack<UnifiedToken> operations;
     VariantConverter converter;
+    auto &tokens = this->tokens;
 
     while(!lexed.empty())
     {
@@ -127,32 +128,67 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
             }
             else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Operation>)
             {
-                if (std::holds_alternative<Functions>(token)) tokens.push(token);
+                if (std::holds_alternative<Functions>(token)) {
+                    // operations.push(token);
+                    lexed.pop();
+                    tokens.push(std::move(std::get<Operand>(lexed.front())));
+                    tokens.push(token);
+                }
                 else {
-                    auto rhs = converter(token);
+                    auto operation = converter(token);
                     if (!operations.empty())
                     {
-                        auto top = operations.top();
-                        auto lhs = converter(std::get<Operation>(top));
+                        auto &&top = std::move(operations.top());
                         while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN)
-                               &&  Precedence::checkPrecedence(lhs, rhs)) {
+                               &&  Precedence::checkPrecedence(converter(std::get<Operation>(top)), operation))
+                        {
                             tokens.push(std::get<Operation>(operations.top())); operations.pop();
                             if(!operations.empty()) top = std::get<Operation>(operations.top());
                             else break;
                         }
                     }
                     operations.push(token);
-                    std::visit([&](auto &&operation){
+                    /*std::visit([&](auto &&operation){
                         tokens.push(operation);
-                    }, std::move(token));
+                    }, std::move(token));*/
                 }
             }
             else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Symbols>)
             {
-                auto symbol = token;
-                if(symbol == Symbols::LPAREN);
+                switch(auto symbol = token)
+                {
+                case Symbols::LPAREN:
+                    operations.push(Symbols::LPAREN);
+                    break;
+
+                case Symbols::RPAREN:
+                {
+                    if (operations.empty()) break;
+                    for(auto top = operations.top();
+                         !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN);
+                         top = operations.top(), operations.pop())
+                    {
+                        operations.pop();
+                        if (operations.empty()) throw std::logic_error("Expression Mismatch");
+                        tokens.push(std::get<Operation>(top));
+                    }
+                } break;
+
+                default:
+                    break;
+                }
             }
+            else throw std::runtime_error("Unknown Token encountered in Parser::parse!");
         }, std::move(current));
         lexed.pop();
     }
+
+    while (!operations.empty())
+    {
+        if(std::holds_alternative<Operation>(operations.top()))
+            tokens.push(std::move(std::get<Operation>(operations.top())));
+        operations.pop();
+    }
+
+    return std::move(tokens);
 }

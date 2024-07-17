@@ -23,21 +23,21 @@ Lexer::TokenQueue&& Lexer::tokenize() const
      *             std::remove_if(this->expression.cbegin(), this->expression.cend(), isspace));
      */
 
+    TokenType previous = TokenType::UNKNOWN;
     for(decltype(expression)::size_type i = 0; i < expression.length(); ++i)
     {
         decltype(expression)::value_type current = expression[i];
-        TokenType previous = TokenType::UNKNOWN;
 
         if(std::isspace(current)) continue;
         else if(std::isdigit(current) || current == Symbols::PERIOD)
         {
             std::size_t idx = 0;
-            auto num = expression.substr(i, expression.find_first_not_of(".0123456789") - i);
+            auto num = expression.substr(i, expression.find_first_not_of(".0123456789", i) - i);
             Operand value = std::stod(num, &idx);
             tokens.push(value);
             previous = TokenType::OPERAND;
 
-            i = i + idx - 1;
+            i += idx - 1;
         }
         else if (
             operations::UnaryOPS operation = static_cast<UnaryOPS>(current);
@@ -84,7 +84,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             tokens.push(value);
             previous = TokenType::FUNCTION;
 
-            i += std::distance(ite, itb);
+            i += std::distance(itb, ite);
         }
         else if(current == '(') { tokens.push(Symbols::LPAREN); previous = TokenType::PARENS; }
         else if(current == ')') { tokens.push(Symbols::RPAREN); previous = TokenType::PARENS; }

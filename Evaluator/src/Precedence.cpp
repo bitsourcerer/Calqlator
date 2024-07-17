@@ -3,6 +3,8 @@
 using namespace evaluator;
 using namespace operations;
 
+std::greater_equal<OperatorPrecedence> Precedence::comparator;
+
 const EVALUATOR_API std::map<Precedence::Operator, OperatorPrecedence> Precedence::precedenceTable = {
 	{ BinaryOPS::SUBTRACTION, SUB },
 	{ BinaryOPS::ADDITION, ADD },

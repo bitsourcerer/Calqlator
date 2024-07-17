@@ -25,12 +25,12 @@ namespace evaluator
 	class Unary : public Expression
 	{
 	public:
-		Unary(Number, char);
-		Unary(Number, operations::UnaryOPS);
-		Result evaluate() const noexcept override;
+        Unary(std::unique_ptr<Expression>, char);
+        Unary(std::unique_ptr<Expression>, operations::UnaryOPS);
+        Result evaluate() const noexcept override;
 
 	private:
-		Number value;
+        std::unique_ptr<Expression> value;
 		operations::UnaryOPS operation;
 	};
 
