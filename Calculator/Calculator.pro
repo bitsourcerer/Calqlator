@@ -10,13 +10,16 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    prompt.cpp
 
 HEADERS += \
-    mainwindow.hpp
+    mainwindow.hpp \
+    prompt.hpp
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    prompt.ui
 
 EVALUATORPATH = $$PWD/../Evaluator
 INCLUDEPATH += $$EVALUATORPATH

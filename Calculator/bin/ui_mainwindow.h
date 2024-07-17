@@ -10,12 +10,14 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QAction>
 #include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
@@ -26,6 +28,7 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *DevPrompt;
     QWidget *centralwidget;
     QFrame *Display;
     QLabel *number;
@@ -67,16 +70,17 @@ public:
     QPushButton *POW2;
     QStatusBar *statusbar;
     QMenuBar *menuBar;
+    QMenu *MainMenu;
     QButtonGroup *commands;
-    QButtonGroup *operations;
-    QButtonGroup *functions;
     QButtonGroup *digits;
+    QButtonGroup *functions;
+    QButtonGroup *operations;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(663, 420);
+        MainWindow->resize(640, 430);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -86,11 +90,14 @@ public:
         icon.addFile(QString::fromUtf8(":/Calculator.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
         MainWindow->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        DevPrompt = new QAction(MainWindow);
+        DevPrompt->setObjectName("DevPrompt");
+        DevPrompt->setMenuRole(QAction::ApplicationSpecificRole);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
         Display = new QFrame(centralwidget);
         Display->setObjectName("Display");
-        Display->setGeometry(QRect(10, 10, 641, 71));
+        Display->setGeometry(QRect(10, 10, 621, 71));
         Display->setStyleSheet(QString::fromUtf8("background-color: rgba(0, 0, 0, 1);\n"
 "color: white;\n"
 "border-radius: 5px;"));
@@ -98,7 +105,7 @@ public:
         Display->setFrameShadow(QFrame::Raised);
         number = new QLabel(Display);
         number->setObjectName("number");
-        number->setGeometry(QRect(0, 30, 631, 41));
+        number->setGeometry(QRect(0, 30, 621, 41));
         QFont font;
         font.setFamilies({QString::fromUtf8("OCR A Extended")});
         font.setPointSize(22);
@@ -110,7 +117,7 @@ public:
         number->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         equation = new QLabel(Display);
         equation->setObjectName("equation");
-        equation->setGeometry(QRect(10, -1, 621, 31));
+        equation->setGeometry(QRect(10, -1, 601, 31));
         QFont font1;
         font1.setFamilies({QString::fromUtf8("Courier")});
         font1.setPointSize(10);
@@ -123,77 +130,77 @@ public:
         digits->setExclusive(false);
         digits->addButton(D7);
         D7->setObjectName("D7");
-        D7->setGeometry(QRect(290, 160, 50, 40));
+        D7->setGeometry(QRect(270, 160, 50, 40));
         D7->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D8 = new QPushButton(centralwidget);
         digits->addButton(D8);
         D8->setObjectName("D8");
-        D8->setGeometry(QRect(360, 160, 50, 40));
+        D8->setGeometry(QRect(340, 160, 50, 40));
         D8->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D9 = new QPushButton(centralwidget);
         digits->addButton(D9);
         D9->setObjectName("D9");
-        D9->setGeometry(QRect(430, 160, 50, 40));
+        D9->setGeometry(QRect(410, 160, 50, 40));
         D9->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D6 = new QPushButton(centralwidget);
         digits->addButton(D6);
         D6->setObjectName("D6");
-        D6->setGeometry(QRect(430, 220, 50, 40));
+        D6->setGeometry(QRect(410, 220, 50, 40));
         D6->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D5 = new QPushButton(centralwidget);
         digits->addButton(D5);
         D5->setObjectName("D5");
-        D5->setGeometry(QRect(360, 220, 50, 40));
+        D5->setGeometry(QRect(340, 220, 50, 40));
         D5->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D4 = new QPushButton(centralwidget);
         digits->addButton(D4);
         D4->setObjectName("D4");
-        D4->setGeometry(QRect(290, 220, 50, 40));
+        D4->setGeometry(QRect(270, 220, 50, 40));
         D4->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D1 = new QPushButton(centralwidget);
         digits->addButton(D1);
         D1->setObjectName("D1");
-        D1->setGeometry(QRect(290, 280, 50, 40));
+        D1->setGeometry(QRect(270, 280, 50, 40));
         D1->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D2 = new QPushButton(centralwidget);
         digits->addButton(D2);
         D2->setObjectName("D2");
-        D2->setGeometry(QRect(360, 280, 50, 40));
+        D2->setGeometry(QRect(340, 280, 50, 40));
         D2->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D3 = new QPushButton(centralwidget);
         digits->addButton(D3);
         D3->setObjectName("D3");
-        D3->setGeometry(QRect(430, 280, 50, 40));
+        D3->setGeometry(QRect(410, 280, 50, 40));
         D3->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         period = new QPushButton(centralwidget);
         digits->addButton(period);
         period->setObjectName("period");
-        period->setGeometry(QRect(430, 340, 50, 40));
+        period->setGeometry(QRect(410, 340, 50, 40));
         period->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         D0 = new QPushButton(centralwidget);
         digits->addButton(D0);
         D0->setObjectName("D0");
-        D0->setGeometry(QRect(290, 340, 121, 41));
+        D0->setGeometry(QRect(270, 340, 121, 41));
         D0->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
@@ -202,7 +209,7 @@ public:
         operations->setObjectName("operations");
         operations->addButton(subtraction);
         subtraction->setObjectName("subtraction");
-        subtraction->setGeometry(QRect(520, 340, 51, 41));
+        subtraction->setGeometry(QRect(500, 340, 51, 41));
         subtraction->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -210,7 +217,7 @@ public:
         exponentiation = new QPushButton(centralwidget);
         operations->addButton(exponentiation);
         exponentiation->setObjectName("exponentiation");
-        exponentiation->setGeometry(QRect(590, 220, 51, 41));
+        exponentiation->setGeometry(QRect(570, 220, 51, 41));
         exponentiation->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -220,20 +227,20 @@ public:
         commands->setObjectName("commands");
         commands->addButton(backspace);
         backspace->setObjectName("backspace");
-        backspace->setGeometry(QRect(433, 102, 50, 40));
+        backspace->setGeometry(QRect(413, 102, 50, 40));
         backspace->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(128, 128, 20, 0.35);\n"
 "border-radius: 5px;"));
         lparen = new QPushButton(centralwidget);
         lparen->setObjectName("lparen");
-        lparen->setGeometry(QRect(520, 100, 51, 41));
+        lparen->setGeometry(QRect(500, 100, 51, 41));
         lparen->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
 "border-radius: 5px;"));
         rparen = new QPushButton(centralwidget);
         rparen->setObjectName("rparen");
-        rparen->setGeometry(QRect(590, 100, 51, 41));
+        rparen->setGeometry(QRect(570, 100, 51, 41));
         rparen->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -241,7 +248,7 @@ public:
         addition = new QPushButton(centralwidget);
         operations->addButton(addition);
         addition->setObjectName("addition");
-        addition->setGeometry(QRect(520, 280, 51, 41));
+        addition->setGeometry(QRect(500, 280, 51, 41));
         addition->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -249,7 +256,7 @@ public:
         modulus = new QPushButton(centralwidget);
         operations->addButton(modulus);
         modulus->setObjectName("modulus");
-        modulus->setGeometry(QRect(590, 160, 51, 41));
+        modulus->setGeometry(QRect(570, 160, 51, 41));
         modulus->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -257,13 +264,13 @@ public:
         reset = new QPushButton(centralwidget);
         commands->addButton(reset);
         reset->setObjectName("reset");
-        reset->setGeometry(QRect(291, 102, 50, 40));
+        reset->setGeometry(QRect(271, 102, 50, 40));
         reset->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(128, 128, 20, 0.35);\n"
 "border-radius: 5px;"));
         evaluation = new QPushButton(centralwidget);
         evaluation->setObjectName("evaluation");
-        evaluation->setGeometry(QRect(590, 280, 51, 101));
+        evaluation->setGeometry(QRect(570, 280, 51, 101));
         evaluation->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(20, 20, 240, 1);\n"
 "color: white;\n"
@@ -271,7 +278,7 @@ public:
         multiplication = new QPushButton(centralwidget);
         operations->addButton(multiplication);
         multiplication->setObjectName("multiplication");
-        multiplication->setGeometry(QRect(520, 220, 51, 41));
+        multiplication->setGeometry(QRect(500, 220, 51, 41));
         multiplication->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -279,7 +286,7 @@ public:
         division = new QPushButton(centralwidget);
         operations->addButton(division);
         division->setObjectName("division");
-        division->setGeometry(QRect(520, 160, 51, 41));
+        division->setGeometry(QRect(500, 160, 51, 41));
         division->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(240, 20, 20, 0.5);\n"
 "color: white;\n"
@@ -287,7 +294,7 @@ public:
         clear = new QPushButton(centralwidget);
         commands->addButton(clear);
         clear->setObjectName("clear");
-        clear->setGeometry(QRect(360, 100, 50, 40));
+        clear->setGeometry(QRect(340, 100, 50, 40));
         clear->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(128, 128, 20, 0.35);\n"
 "border-radius: 5px;"));
@@ -296,79 +303,79 @@ public:
         functions->setObjectName("functions");
         functions->addButton(log10);
         log10->setObjectName("log10");
-        log10->setGeometry(QRect(70, 220, 50, 40));
+        log10->setGeometry(QRect(50, 220, 50, 40));
         log10->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         sqrt = new QPushButton(centralwidget);
         functions->addButton(sqrt);
         sqrt->setObjectName("sqrt");
-        sqrt->setGeometry(QRect(210, 280, 50, 40));
+        sqrt->setGeometry(QRect(190, 280, 50, 40));
         sqrt->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         tan = new QPushButton(centralwidget);
         functions->addButton(tan);
         tan->setObjectName("tan");
-        tan->setGeometry(QRect(210, 160, 50, 40));
+        tan->setGeometry(QRect(190, 160, 50, 40));
         tan->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         loge = new QPushButton(centralwidget);
         functions->addButton(loge);
         loge->setObjectName("loge");
-        loge->setGeometry(QRect(140, 220, 50, 40));
+        loge->setGeometry(QRect(120, 220, 50, 40));
         loge->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         RANDOM = new QPushButton(centralwidget);
         RANDOM->setObjectName("RANDOM");
-        RANDOM->setGeometry(QRect(140, 280, 50, 40));
+        RANDOM->setGeometry(QRect(120, 280, 50, 40));
         RANDOM->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         sin = new QPushButton(centralwidget);
         functions->addButton(sin);
         sin->setObjectName("sin");
-        sin->setGeometry(QRect(70, 160, 50, 40));
+        sin->setGeometry(QRect(50, 160, 50, 40));
         sin->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         FACTORIAL = new QPushButton(centralwidget);
         FACTORIAL->setObjectName("FACTORIAL");
-        FACTORIAL->setGeometry(QRect(70, 280, 50, 40));
+        FACTORIAL->setGeometry(QRect(50, 280, 50, 40));
         FACTORIAL->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         cos = new QPushButton(centralwidget);
         functions->addButton(cos);
         cos->setObjectName("cos");
-        cos->setGeometry(QRect(140, 160, 50, 40));
+        cos->setGeometry(QRect(120, 160, 50, 40));
         cos->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         log2 = new QPushButton(centralwidget);
         functions->addButton(log2);
         log2->setObjectName("log2");
-        log2->setGeometry(QRect(210, 220, 50, 40));
+        log2->setGeometry(QRect(190, 220, 50, 40));
         log2->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         POW = new QPushButton(centralwidget);
         POW->setObjectName("POW");
-        POW->setGeometry(QRect(140, 340, 50, 40));
+        POW->setGeometry(QRect(120, 340, 50, 40));
         POW->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         BASE10 = new QPushButton(centralwidget);
         BASE10->setObjectName("BASE10");
-        BASE10->setGeometry(QRect(210, 340, 50, 40));
+        BASE10->setGeometry(QRect(190, 340, 50, 40));
         BASE10->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         POW2 = new QPushButton(centralwidget);
         POW2->setObjectName("POW2");
-        POW2->setGeometry(QRect(70, 340, 50, 40));
+        POW2->setGeometry(QRect(50, 340, 50, 40));
         POW2->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
@@ -378,8 +385,13 @@ public:
         MainWindow->setStatusBar(statusbar);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName("menuBar");
-        menuBar->setGeometry(QRect(0, 0, 663, 23));
+        menuBar->setGeometry(QRect(0, 0, 640, 23));
+        MainMenu = new QMenu(menuBar);
+        MainMenu->setObjectName("MainMenu");
         MainWindow->setMenuBar(menuBar);
+
+        menuBar->addAction(MainMenu->menuAction());
+        MainMenu->addAction(DevPrompt);
 
         retranslateUi(MainWindow);
 
@@ -392,6 +404,13 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Calculator", nullptr));
+        DevPrompt->setText(QCoreApplication::translate("MainWindow", "Developer Input", nullptr));
+#if QT_CONFIG(tooltip)
+        DevPrompt->setToolTip(QCoreApplication::translate("MainWindow", "Input Custom Expression", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(shortcut)
+        DevPrompt->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+D", nullptr));
+#endif // QT_CONFIG(shortcut)
         number->setText(QCoreApplication::translate("MainWindow", "Calculator", nullptr));
         equation->setText(QString());
         D7->setText(QCoreApplication::translate("MainWindow", "7", nullptr));
@@ -429,6 +448,7 @@ public:
         POW->setText(QCoreApplication::translate("MainWindow", "x^y", nullptr));
         BASE10->setText(QCoreApplication::translate("MainWindow", "EE", nullptr));
         POW2->setText(QCoreApplication::translate("MainWindow", "x^2", nullptr));
+        MainMenu->setTitle(QCoreApplication::translate("MainWindow", "Menu", nullptr));
     } // retranslateUi
 
 };

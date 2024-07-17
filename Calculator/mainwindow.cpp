@@ -9,6 +9,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , prompt(new Prompt(this))
 {
     ui->setupUi(this);
     // this->setFixedSize(370, 410);
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->rparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->evaluation, SIGNAL(clicked()), this, SLOT(evaluate_expression()));
+    connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -226,4 +228,17 @@ void MainWindow::replace_subexpr(QString &eqn)
     }
     // ui->equation->setText(eqn);
     processed.clear();
+}
+
+void MainWindow::devel_prompt(bool triggered)
+{
+    if(prompt->exec() != QDialog::Accepted) return;
+    auto expression = prompt->getExpression();
+    qDebug() << "Evaluating Custom Expression : " << expression << '\n';
+    auto result = evaluator::eval(expression.toStdString());
+    ui->number->setText(QString::number(result));
+}
+
+void debug()
+{
 }

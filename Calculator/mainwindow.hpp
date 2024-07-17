@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include "prompt.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,13 +24,18 @@ private slots:
     void handle_operations(QAbstractButton*); // for operations like add, subtract, multiply and divide
     void handle_functions(QAbstractButton*); // for functions like sin, cos, tan, log and natural logs
     void handle_parentheses(); // for parenthesis exclusively
+    void devel_prompt(bool);
 
 private:
     Ui::MainWindow *ui;
+    Prompt *prompt;
+
     void backspace() const;
     void reset() const;
     void clear() const;
 
     static void replace_subexpr(QString&);
+
+    friend void debug();
 };
 #endif // MAINWINDOW_HPP
