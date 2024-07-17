@@ -49,7 +49,7 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
     {
         Precedence::Operator operator()(operations::BinaryOPS op) const { return op; }
         Precedence::Operator operator()(operations::UnaryOPS op) const { return op; }
-        Precedence::Operator operator()(operations::Functions op) const { return Precedence::Operator{}; }
+        Precedence::Operator operator()(operations::Functions) const { return Precedence::Operator{}; }
 
         Precedence::Operator operator()(Operation op) const {
             return std::visit([this](const auto &o) {

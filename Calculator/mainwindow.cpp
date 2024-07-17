@@ -34,7 +34,6 @@ bool paren = false; // parentheses just closed, can't allow numbers directly wit
 
 QStack<Operand> subresults;
 QStack<std::string::size_type> markers;
-evl::Evaluator eval;
 
 void MainWindow::evaluate_expression()
 {
@@ -61,7 +60,7 @@ void MainWindow::evaluate_expression()
      */
 
     watch.start();
-    auto result = eval.feed(expr.toStdString()).evaluate();
+    auto result = evaluator::eval(expr.toStdString());
     auto elapsed = watch.nsecsElapsed() / 1e6;
     qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
     ui->number->setText(QString::number(result));
@@ -166,7 +165,7 @@ void MainWindow::handle_parentheses()
         if(!eqn.endsWith(btn->text())) eqn.append(num + ' ');
 
         subexpr = eqn.mid(markers.pop()) + ')';
-        auto result = eval.feed(subexpr.toStdString()).evaluate();
+        auto result = evaluator::eval(subexpr.toStdString());
         subresults.push(result);
         ui->number->setText(QString::number(result));
 
