@@ -19,7 +19,7 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
 
 	struct EVALUATOR_API Precedence // For Priority Queue
 	{
-        using Operator = std::variant<operations::BinaryOPS, operations::UnaryOPS>;
+        using Operator = std::variant<std::monostate, operations::BinaryOPS, operations::UnaryOPS>;
         static const std::map < Operator, OperatorPrecedence > precedenceTable;
         static std::greater_equal<OperatorPrecedence> comparator;
 
@@ -27,6 +27,7 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
         static bool checkPrecedence(Operator left, Operator right)
 			// check if left has greater or equal precedence to right
 		{
+            if(std::holds_alternative<std::monostate>(left) | std::holds_alternative<std::monostate>(right)) return false;
             const auto& lop = precedenceTable.find(left)->second;
             const auto& rop = precedenceTable.find(right)->second;
 			// return std::less<OperatorPrecedence>{}(lop, rop);
@@ -43,4 +44,17 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
 			return static_cast<int>(op);
 		}
 	};
+
+    struct VariantConverter
+    {
+        Precedence::Operator operator()(operations::BinaryOPS op) const { return op; }
+        Precedence::Operator operator()(operations::UnaryOPS op) const { return op; }
+        Precedence::Operator operator()(operations::Functions op) const { return Precedence::Operator{}; }
+
+        Precedence::Operator operator()(Operation op) const {
+            return std::visit([this](const auto &o) {
+                return (*this) (o);
+            }, op);
+        }
+    };
 }

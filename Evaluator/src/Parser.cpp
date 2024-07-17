@@ -113,7 +113,9 @@ Parser::TokenQueue&& evaluator::ShuntingYard(Parser &parser)
 
 Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
 {
+    // Consult Shunting Yard Algorithm's Wiki!
     Parser::VecStack<UnifiedToken> operations;
+    VariantConverter converter;
 
     while(!lexed.empty())
     {
@@ -125,13 +127,30 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
             }
             else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Operation>)
             {
-                std::visit([&](auto &&operation){
-                    tokens.push(operation);
-                }, std::move(token));
+                if (std::holds_alternative<Functions>(token)) tokens.push(token);
+                else {
+                    auto rhs = converter(token);
+                    if (!operations.empty())
+                    {
+                        auto top = operations.top();
+                        auto lhs = converter(std::get<Operation>(top));
+                        while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN)
+                               &&  Precedence::checkPrecedence(lhs, rhs)) {
+                            tokens.push(std::get<Operation>(operations.top())); operations.pop();
+                            if(!operations.empty()) top = std::get<Operation>(operations.top());
+                            else break;
+                        }
+                    }
+                    operations.push(token);
+                    std::visit([&](auto &&operation){
+                        tokens.push(operation);
+                    }, std::move(token));
+                }
             }
             else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Symbols>)
             {
-                if(token == Symbols::LPAREN);
+                auto symbol = token;
+                if(symbol == Symbols::LPAREN);
             }
         }, std::move(current));
         lexed.pop();
