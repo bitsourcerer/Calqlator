@@ -23,7 +23,7 @@ evaluator::Unary::Unary(std::unique_ptr<Expression> val, UnaryOPS op) : value(st
 
 Result Unary::evaluate() const noexcept
 {
-    return operation == '-' ? -value->evaluate() : value->evaluate();
+    return operation == UnaryOPS::NEGATION ? -value->evaluate() : value->evaluate();
 }
 
 Binary::Binary(VExpression lhs, VExpression rhs, BinaryOPS oper) : left(std::move(lhs)), right(std::move(rhs))

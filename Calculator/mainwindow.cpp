@@ -238,7 +238,3 @@ void MainWindow::devel_prompt(bool triggered)
     auto result = evaluator::eval(expression.toStdString());
     ui->number->setText(QString::number(result));
 }
-
-void debug()
-{
-}

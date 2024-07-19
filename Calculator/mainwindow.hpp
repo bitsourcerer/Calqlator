@@ -36,6 +36,6 @@ private:
 
     static void replace_subexpr(QString&);
 
-    friend void debug();
+    friend void debug(); // for debug purposes
 };
 #endif // MAINWINDOW_HPP

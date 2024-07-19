@@ -58,7 +58,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             else
                 tokens.push(static_cast<BinaryOPS>(current));
             */
-            if(previous == TokenType::OPERATION || previous == TokenType::PARENS) tokens.push(operation);
+            if(previous == TokenType::OPERATION || previous == TokenType::PARENS || i == 0) tokens.push(operation);
             else tokens.push(static_cast<BinaryOPS>(current));
             previous = TokenType::OPERATION;
         }

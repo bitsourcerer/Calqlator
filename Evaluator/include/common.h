@@ -52,9 +52,9 @@ namespace evaluator
 
 
 		enum EVALUATOR_API UnaryOPS : OperationEnumeratorUnderlyingType
-		{ 
-			NEGATION = '~',
-			FACTORIAL = '!'
+		{
+            NEGATION = '-',
+            FACTORIAL = '!'
 		};
 
 		enum EVALUATOR_API Functions : OperationEnumeratorUnderlyingType
