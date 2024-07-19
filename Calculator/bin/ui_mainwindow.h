@@ -60,13 +60,13 @@ public:
     QPushButton *sqrt;
     QPushButton *tan;
     QPushButton *logn;
-    QPushButton *random;
+    QPushButton *rand;
     QPushButton *sin;
-    QPushButton *factorial;
+    QPushButton *fact;
     QPushButton *cos;
     QPushButton *logtwo;
     QPushButton *sign;
-    QPushButton *BASE10;
+    QPushButton *baseten;
     QPushButton *powtwo;
     QStatusBar *statusbar;
     QMenuBar *menuBar;
@@ -328,10 +328,10 @@ public:
         logn->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
-        random = new QPushButton(centralwidget);
-        random->setObjectName("random");
-        random->setGeometry(QRect(120, 280, 50, 40));
-        random->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
+        rand = new QPushButton(centralwidget);
+        rand->setObjectName("rand");
+        rand->setGeometry(QRect(120, 280, 50, 40));
+        rand->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         sin = new QPushButton(centralwidget);
@@ -341,11 +341,11 @@ public:
         sin->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
-        factorial = new QPushButton(centralwidget);
-        functions->addButton(factorial);
-        factorial->setObjectName("factorial");
-        factorial->setGeometry(QRect(50, 280, 50, 40));
-        factorial->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
+        fact = new QPushButton(centralwidget);
+        functions->addButton(fact);
+        fact->setObjectName("fact");
+        fact->setGeometry(QRect(50, 280, 50, 40));
+        fact->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         cos = new QPushButton(centralwidget);
@@ -369,10 +369,10 @@ public:
         sign->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
-        BASE10 = new QPushButton(centralwidget);
-        BASE10->setObjectName("BASE10");
-        BASE10->setGeometry(QRect(190, 340, 50, 40));
-        BASE10->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
+        baseten = new QPushButton(centralwidget);
+        baseten->setObjectName("baseten");
+        baseten->setGeometry(QRect(190, 340, 50, 40));
+        baseten->setStyleSheet(QString::fromUtf8("border: 1px solid black;\n"
 "background-color: rgba(255, 255, 255, 0.85);\n"
 "border-radius: 5px;"));
         powtwo = new QPushButton(centralwidget);
@@ -443,13 +443,13 @@ public:
         sqrt->setText(QCoreApplication::translate("MainWindow", "sqrt", nullptr));
         tan->setText(QCoreApplication::translate("MainWindow", "tan", nullptr));
         logn->setText(QCoreApplication::translate("MainWindow", "ln", nullptr));
-        random->setText(QCoreApplication::translate("MainWindow", "rand", nullptr));
+        rand->setText(QCoreApplication::translate("MainWindow", "rand", nullptr));
         sin->setText(QCoreApplication::translate("MainWindow", "sin", nullptr));
-        factorial->setText(QCoreApplication::translate("MainWindow", "n!", nullptr));
+        fact->setText(QCoreApplication::translate("MainWindow", "n!", nullptr));
         cos->setText(QCoreApplication::translate("MainWindow", "cos", nullptr));
         logtwo->setText(QCoreApplication::translate("MainWindow", "log2", nullptr));
         sign->setText(QCoreApplication::translate("MainWindow", "+/-", nullptr));
-        BASE10->setText(QCoreApplication::translate("MainWindow", "EE", nullptr));
+        baseten->setText(QCoreApplication::translate("MainWindow", "EE", nullptr));
         powtwo->setText(QCoreApplication::translate("MainWindow", "x^2", nullptr));
         MainMenu->setTitle(QCoreApplication::translate("MainWindow", "Menu", nullptr));
     } // retranslateUi

@@ -4,7 +4,7 @@
 using namespace evaluator;
 using namespace operations;
 
-enum struct TokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, PARENS, UNKNOWN };
+enum struct eTokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, PARENS, UNKNOWN };
 
 Lexer::Lexer(std::string_view expr) : expression(expr), filled(!expression.empty())
 {
@@ -23,7 +23,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
      *             std::remove_if(this->expression.cbegin(), this->expression.cend(), isspace));
      */
 
-    TokenType previous = TokenType::UNKNOWN;
+    eTokenType previous = eTokenType::UNKNOWN;
     for(decltype(expression)::size_type i = 0; i < expression.length(); ++i)
     {
         decltype(expression)::value_type current = expression[i];
@@ -35,7 +35,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             auto num = expression.substr(i, expression.find_first_not_of(".0123456789", i) - i);
             Operand value = std::stod(num, &idx);
             tokens.push(value);
-            previous = TokenType::OPERAND;
+            previous = eTokenType::OPERAND;
 
             i += idx - 1;
         }
@@ -58,9 +58,9 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             else
                 tokens.push(static_cast<BinaryOPS>(current));
             */
-            if(previous == TokenType::OPERATION || previous == TokenType::PARENS || i == 0) tokens.push(operation);
+            if(previous == eTokenType::OPERATION || previous == eTokenType::PARENS || i == 0) tokens.push(operation);
             else tokens.push(static_cast<BinaryOPS>(current));
-            previous = TokenType::OPERATION;
+            previous = eTokenType::OPERATION;
         }
         else if (
             BinaryOPS operation = static_cast<BinaryOPS>(current);
@@ -68,7 +68,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
         )
         {
             tokens.push(operation);
-            previous = TokenType::OPERATION;
+            previous = eTokenType::OPERATION;
         }
         else if(std::isalpha(current))
         {
@@ -82,12 +82,12 @@ Lexer::TokenQueue&& Lexer::tokenize() const
 
             Operand value = std::stod(expression.substr(fn.length() + i + 1, std::distance(ite, std::next(itb, fn.length() + 1))));
             tokens.push(value);
-            previous = TokenType::FUNCTION;
+            previous = eTokenType::FUNCTION;
 
             i += std::distance(itb, ite);
         }
-        else if(current == '(') { tokens.push(Symbols::LPAREN); previous = TokenType::PARENS; }
-        else if(current == ')') { tokens.push(Symbols::RPAREN); previous = TokenType::PARENS; }
+        else if(current == '(') { tokens.push(Symbols::LPAREN); previous = eTokenType::PARENS; }
+        else if(current == ')') { tokens.push(Symbols::RPAREN); previous = eTokenType::PARENS; }
         else if(std::ispunct(current) && current == Symbols::COMMA) tokens.push(Symbols::COMMA);
         else; // UNKNOWN TOKEN ENCOUNTERED
     }

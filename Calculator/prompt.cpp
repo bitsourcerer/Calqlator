@@ -4,6 +4,7 @@
 Prompt::Prompt(QWidget *parent) : QDialog(parent), ui(new Ui::Prompt)
 {
     ui->setupUi(this);
+    ui->expression->setFocus();
 }
 
 Prompt::~Prompt()

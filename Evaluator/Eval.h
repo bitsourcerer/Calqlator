@@ -2,10 +2,11 @@
 #define EVAL_H
 
 #include <string_view>
+#include "API.h"
 #include "include/utility.hpp"
 
 namespace evaluator {
-Operand eval(std::string_view expression);
+EVALUATOR_API Operand eval(std::string_view expression);
 }
 
 // namespace evl = evaluator;

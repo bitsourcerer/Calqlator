@@ -7,7 +7,7 @@
 namespace evaluator
 {
 
-class Lexer
+class EVALUATOR_API Lexer
 {
 public:
     using TokenQueue = std::queue<UnifiedToken>;
