@@ -24,6 +24,7 @@ private slots:
     void handle_operations(QAbstractButton*); // for operations like add, subtract, multiply and divide
     void handle_functions(QAbstractButton*); // for functions like sin, cos, tan, log and natural logs
     void handle_parentheses(); // for parenthesis exclusively
+    void generate_random(); // get random number [0, 1) when rand is clicked
     void devel_prompt(bool);
 
 private:
@@ -38,4 +39,7 @@ private:
 
     friend void debug(); // for debug purposes
 };
+
+enum OperationType { OPERAND, OPERATION, FUNCTION, PARENTHESES };
+
 #endif // MAINWINDOW_HPP

@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QStack>
 #include <QElapsedTimer>
+#include <QRandomGenerator>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->rparen, SIGNAL(clicked()), this, SLOT(handle_parentheses()));
     connect(ui->evaluation, SIGNAL(clicked()), this, SLOT(evaluate_expression()));
+    connect(ui->rand, SIGNAL(clicked()), this, SLOT(generate_random()));
     connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
 }
 
@@ -44,7 +46,9 @@ void MainWindow::evaluate_expression()
     bool flag = false; // if markers are present we turn off replace_subexpr so that it doesnt cause problems
 
     auto expr = ui->equation->text();
-    if(!expr.endsWith(')') && !expr.isEmpty()) expr.append(' ' + ui->number->text());
+
+    if(expr.isEmpty()) return;
+    if(!expr.isEmpty() && !expr.endsWith(')')) expr.append(' ' + ui->number->text());
     if(!ready) return;
 
     ui->equation->clear();
@@ -125,8 +129,7 @@ void MainWindow::handle_operations(QAbstractButton *button)
         return;
     } */
 
-    // if(eqn == "Expression") eqn.clear();
-
+    // if(eqn == "Expression") eqn.clear();    
     if(!eqn.isEmpty() && !eqn.endsWith(' ')) eqn.append(' ');
     if(!paren) eqn.append(num + ' ');
     ui->equation->setText(eqn + btn->text());
@@ -142,6 +145,25 @@ void MainWindow::handle_functions(QAbstractButton *button)
     auto btn = qobject_cast<QPushButton*>(button);
     auto eqn = ui->equation->text();
     auto num = ui->number->text();
+
+    // special functions
+    if(btn->objectName() == "sign")
+    {
+        if(num.startsWith('-')) num.removeFirst();
+        else num.prepend('-');
+        ui->number->setText(num);
+        return;
+    }
+    else if(btn->objectName() == "powtwo")
+    {
+        ui->lparen->click();
+        ui->exponent->click();
+        ui->D2->click();
+        ui->rparen->click();
+
+        //ui->equation->setText(ui->equation->text() + " ( " + ui->number->text() + " ^ 2 )");
+        return;
+    }
 
     if(!eqn.isEmpty() && !eqn.endsWith(' ')) eqn.push_back(' ');
     eqn += btn->objectName() + '(' + num + ')';
@@ -164,7 +186,7 @@ void MainWindow::handle_parentheses()
     if(btn == ui->rparen) // btn->objectName() == "rparen"
     {
         if(markers.empty()) return; // extra Right Paren ignored!
-        if(!eqn.endsWith(btn->text())) eqn.append(num + ' ');
+        if(!eqn.trimmed().endsWith(btn->text())) eqn.append(num + ' '); // if the equation doesnt end with ')'
 
         subexpr = eqn.mid(markers.pop()) + ')';
         auto result = evaluator::eval(subexpr.toStdString());
@@ -180,6 +202,11 @@ void MainWindow::handle_parentheses()
     }
 
     ui->equation->setText(eqn + btn->text());
+}
+
+void MainWindow::generate_random()
+{
+    ui->number->setText(QString::number(QRandomGenerator::global()->generateDouble()));
 }
 
 void MainWindow::reset() const
@@ -220,6 +247,7 @@ void MainWindow::replace_subexpr(QString &eqn)
     int current;
     while(!subresults.empty() && (current = eqn.lastIndexOf('(')) != -1)
     {
+        if(current != 0 && eqn[current - 1].isLetter()) return; // skip if its a function
         Operand result = subresults.pop();
         if(processed.find(result) != processed.end()) continue;
         processed.insert(result);
@@ -230,7 +258,7 @@ void MainWindow::replace_subexpr(QString &eqn)
     processed.clear();
 }
 
-void MainWindow::devel_prompt(bool triggered)
+void MainWindow::devel_prompt(bool)
 {
     if(prompt->exec() != QDialog::Accepted) return;
     auto expression = prompt->getExpression();
