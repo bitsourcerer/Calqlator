@@ -91,6 +91,7 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
                 expressions.push(std::make_unique<Number>(token));
             else if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operation>)
             {
+                // could also use std::holds_alternative
                 std::visit([&](const auto &operation) {
                     if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::BinaryOPS>)
                     {

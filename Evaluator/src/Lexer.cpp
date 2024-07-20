@@ -62,7 +62,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
             else
                 tokens.push(static_cast<BinaryOPS>(current));
             */
-            if(previous == eTokenType::OPERATION || previous == eTokenType::LPAREN || i == 0) tokens.push(Operation{operation});
+            if(previous == eTokenType::OPERATION || previous == eTokenType::LPAREN || i == 0) tokens.emplace(Operation{operation});
             else tokens.push(Operation{static_cast<BinaryOPS>(operation)});
             previous = eTokenType::OPERATION;
         }
@@ -71,7 +71,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
             binops.find(operation) != binops.end()
         )
         {
-            tokens.push(Operation{operation});
+            tokens.emplace(Operation{operation});
             previous = eTokenType::OPERATION;
         }
         else if(std::isalpha(current))
@@ -82,7 +82,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
             auto itb = expression.cbegin() + i;
 
             if (operations::funcids.find(fn) == funcids.end()) continue; // not a registered function (not found in registry map)
-            tokens.push(funcids.at(fn));
+            tokens.emplace(Operation{funcids.at(fn)});
 
             Operand value = std::stod(expression.substr(fn.length() + i + 1, std::distance(ite, std::next(itb, fn.length() + 1))));
             tokens.push(value);

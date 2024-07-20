@@ -133,18 +133,18 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                 if (std::holds_alternative<Functions>(token)) {
                     // operations.push(token);
                     lexed.pop();
-                    tokens.push(std::move(std::get<Operand>(lexed.front())));
+                    tokens.emplace(std::move(std::get<Operand>(lexed.front())));
                     tokens.push(token);
                 }
                 else {
                     auto operation = converter(token);
                     if (!operations.empty())
                     {
-                        auto &&top = std::move(operations.top());
+                        auto top = std::move(operations.top());
                         while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN)
                                &&  Precedence::checkPrecedence(converter(std::get<Operation>(top)), operation))
                         {
-                            tokens.push(std::get<Operation>(operations.top())); operations.pop();
+                            tokens.push(std::move(std::get<Operation>(operations.top()))); operations.pop();
                             if(!operations.empty()) top = std::get<Operation>(operations.top());
                             else break;
                         }
