@@ -36,7 +36,8 @@ Lexer::TokenQueue& Lexer::tokenize() const
         else if(std::isdigit(current) || static_cast<Symbols>(current) == Symbols::PERIOD)
         {
             std::size_t idx = 0;
-            auto num = expression.substr(i, expression.find_first_not_of(".0123456789", i) - i);
+            auto num = expression.substr(i, expression.find_first_not_of(".0123456789eE+-", i) - i);
+            // auto num = expression.substr(i);
             Operand value = std::stod(num, &idx);
             tokens.push(value);
             previous = eTokenType::OPERAND;

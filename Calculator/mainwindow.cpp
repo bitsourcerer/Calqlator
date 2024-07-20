@@ -164,6 +164,21 @@ void MainWindow::handle_functions(QAbstractButton *button)
         //ui->equation->setText(ui->equation->text() + " ( " + ui->number->text() + " ^ 2 )");
         return;
     }
+    else if(btn->objectName() == "baseten")
+    {
+        if(auto index = num.indexOf('e'); index != -1)
+        {
+            // auto sign = num.at(index + 1);
+            if(num.length() <= index + 1) num.push_back('+');
+            num[index + 1] = num.at(index + 1) == '+' ? '-' : '+';
+        }
+        else
+        {
+            num.append("e+");
+        }
+        ui->number->setText(num);
+        return;
+    }
 
     if(!eqn.isEmpty() && !eqn.endsWith(' ')) eqn.push_back(' ');
     eqn += btn->objectName() + '(' + num + ')';
