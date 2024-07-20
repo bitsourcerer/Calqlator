@@ -1,10 +1,13 @@
 #include <algorithm>
+#include <cctype>
+#include <cassert>
+
 #include "Lexer.hpp"
 
 using namespace evaluator;
 using namespace operations;
 
-enum struct eTokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, PARENS, UNKNOWN };
+enum struct eTokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, LPAREN, RPAREN, UNKNOWN };
 
 Lexer::Lexer(std::string_view expr) : expression(expr), filled(!expression.empty())
 {
@@ -16,12 +19,13 @@ void Lexer::set(std::string_view expr)
     filled = !expression.empty();
 }
 
-Lexer::TokenQueue&& Lexer::tokenize() const
+Lexer::TokenQueue& Lexer::tokenize() const
 {
     /*
      * std::string expression(this->expression.cbegin(),
      *             std::remove_if(this->expression.cbegin(), this->expression.cend(), isspace));
      */
+    auto &tokens = this->tokens;
 
     eTokenType previous = eTokenType::UNKNOWN;
     for(decltype(expression)::size_type i = 0; i < expression.length(); ++i)
@@ -29,7 +33,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
         decltype(expression)::value_type current = expression[i];
 
         if(std::isspace(current)) continue;
-        else if(std::isdigit(current) || current == Symbols::PERIOD)
+        else if(std::isdigit(current) || static_cast<Symbols>(current) == Symbols::PERIOD)
         {
             std::size_t idx = 0;
             auto num = expression.substr(i, expression.find_first_not_of(".0123456789", i) - i);
@@ -40,7 +44,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             i += idx - 1;
         }
         else if (
-            operations::UnaryOPS operation = static_cast<UnaryOPS>(current);
+            UnaryOPS operation = static_cast<UnaryOPS>(current);
             unops.find(operation) != unops.end()
         )
         {
@@ -58,8 +62,8 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             else
                 tokens.push(static_cast<BinaryOPS>(current));
             */
-            if(previous == eTokenType::OPERATION || previous == eTokenType::PARENS || i == 0) tokens.push(operation);
-            else tokens.push(static_cast<BinaryOPS>(current));
+            if(previous == eTokenType::OPERATION || previous == eTokenType::LPAREN || i == 0) tokens.push(Operation{operation});
+            else tokens.push(Operation{static_cast<BinaryOPS>(operation)});
             previous = eTokenType::OPERATION;
         }
         else if (
@@ -67,7 +71,7 @@ Lexer::TokenQueue&& Lexer::tokenize() const
             binops.find(operation) != binops.end()
         )
         {
-            tokens.push(operation);
+            tokens.push(Operation{operation});
             previous = eTokenType::OPERATION;
         }
         else if(std::isalpha(current))
@@ -86,13 +90,15 @@ Lexer::TokenQueue&& Lexer::tokenize() const
 
             i += std::distance(itb, ite);
         }
-        else if(current == '(') { tokens.push(Symbols::LPAREN); previous = eTokenType::PARENS; }
-        else if(current == ')') { tokens.push(Symbols::RPAREN); previous = eTokenType::PARENS; }
-        else if(std::ispunct(current) && current == Symbols::COMMA) tokens.push(Symbols::COMMA);
+        else if(current == '(') { tokens.push(Symbols::LPAREN); previous = eTokenType::LPAREN; }
+        else if(current == ')') { tokens.push(Symbols::RPAREN); previous = eTokenType::RPAREN; }
+        else if(std::ispunct(current) && static_cast<Symbols>(current) == Symbols::COMMA) tokens.push(Symbols::COMMA);
         else; // UNKNOWN TOKEN ENCOUNTERED
     }
-    return std::move(tokens);
+    return tokens;
 }
+
+Lexer::TokenQueue& Lexer::getTokens() const { return tokens; }
 
 
 /*

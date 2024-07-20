@@ -21,8 +21,8 @@ Evaluator& Evaluator::feed(const std::string &str)
     // tree.build(std::move(t));
     lexer.set(input);
 
-    auto &&tokens = lexer.tokenize();
-    auto &&parsed = parser.parse(std::move(tokens));
+    auto &tokens = lexer.tokenize();
+    auto &&parsed = parser.parse(tokens);
     tree.build(std::move(parsed));
     // tree.build(parser.feed(str).parse());
 

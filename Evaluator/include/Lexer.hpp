@@ -14,12 +14,12 @@ public:
     Lexer() = default;
     Lexer(std::string_view);
     void set(std::string_view expr);
-    TokenQueue&& tokenize() const;
-    TokenQueue&& getTokens() const;
+    TokenQueue& tokenize() const;
+    TokenQueue& getTokens() const;
 
 private:
-    bool filled = false;
     std::string expression;
+    bool filled = false;
     mutable TokenQueue tokens;
 };
 

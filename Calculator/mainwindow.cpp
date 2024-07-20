@@ -149,7 +149,7 @@ void MainWindow::handle_functions(QAbstractButton *button)
     // special functions
     if(btn->objectName() == "sign")
     {
-        if(num.startsWith('-')) num.removeFirst();
+        if(num.startsWith('-')) num.remove(0, 1); // num.removeFirst();
         else num.prepend('-');
         ui->number->setText(num);
         return;

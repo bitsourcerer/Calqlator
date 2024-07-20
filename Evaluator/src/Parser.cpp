@@ -111,7 +111,7 @@ Parser::TokenQueue&& evaluator::ShuntingYard(Parser &parser)
     return std::move(tokens);
 }
 
-Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
+Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
 {
     // Consult Shunting Yard Algorithm's Wiki!
     Parser::VecStack<UnifiedToken> operations;
@@ -122,11 +122,13 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
     {
         auto &&current = std::move(lexed.front());
         std::visit([&](auto &&token){
-            if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Operand>)
+            using T = std::decay_t<decltype(token)>;
+            // static_assert(std::is_same_v<T, OperationEnumeratorUnderlyingType>, "for some reason T is being converted to underlying type!");
+            if constexpr(std::is_same_v<std::decay_t<T>, Operand>)
             {
                 tokens.push(token);
             }
-            else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Operation>)
+            else if constexpr(std::is_same_v<std::decay_t<T>, Operation>) // Operation itself is a variant
             {
                 if (std::holds_alternative<Functions>(token)) {
                     // operations.push(token);
@@ -153,7 +155,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
                     }, std::move(token));*/
                 }
             }
-            else if constexpr(std::is_same_v<std::decay_t<decltype(token)>, Symbols>)
+            else if constexpr(std::is_same_v<std::decay_t<T>, Symbols>)
             {
                 switch(auto symbol = token)
                 {
@@ -179,7 +181,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &&lexed)
                 }
             }
             else throw std::runtime_error("Unknown Token encountered in Parser::parse!");
-        }, std::move(current));
+        }, current);
         lexed.pop();
     }
 

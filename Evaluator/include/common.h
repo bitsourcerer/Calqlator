@@ -51,13 +51,13 @@ namespace evaluator
 		};
 
 
-		enum EVALUATOR_API UnaryOPS : OperationEnumeratorUnderlyingType
+        enum class EVALUATOR_API UnaryOPS : OperationEnumeratorUnderlyingType
 		{
             NEGATION = '-',
             FACTORIAL = '!'
 		};
 
-		enum EVALUATOR_API Functions : OperationEnumeratorUnderlyingType
+        enum class EVALUATOR_API Functions : OperationEnumeratorUnderlyingType
 		{
 			SIN = 's',
 			COS = 'c',
@@ -67,7 +67,7 @@ namespace evaluator
 			LOG10 = 'L'
         };
 
-        enum EVALUATOR_API Symbols : OperationEnumeratorUnderlyingType
+        enum class EVALUATOR_API Symbols : OperationEnumeratorUnderlyingType
         {
             LPAREN = '(',
             RPAREN = ')',

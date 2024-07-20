@@ -23,7 +23,7 @@ namespace evaluator
 		Parser& feed(std::string_view);
         // [[MAYBE_UNUSED]] std::string parse() const;
         TokenQueue&& parse();
-        Parser::TokenQueue&& parse(Lexer::TokenQueue&&);
+        Parser::TokenQueue&& parse(Lexer::TokenQueue&);
         TokenQueue&& getTokens();
 
 	private:
