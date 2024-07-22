@@ -49,7 +49,7 @@ Parser::TokenQueue&& evaluator::ShuntingYard(Parser &parser)
             {
                 auto top = operations.top();
                 while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN)
-                       &&  Precedence::checkPrecedence(std::get<BinaryOPS>(std::get<Operation>(top)), operation)) {
+                       &&  Precedence::check(std::get<BinaryOPS>(std::get<Operation>(top)), operation)) {
                     tokens.push(std::get<Operation>(operations.top())); operations.pop();
                     if(!operations.empty()) top = std::get<Operation>(operations.top());
                     else break;
@@ -87,7 +87,7 @@ Parser::TokenQueue&& evaluator::ShuntingYard(Parser &parser)
                 top = operations.top(), operations.pop())
             {
                 operations.pop();
-                if (operations.empty()) throw std::logic_error("Expression Mismatch");
+                if (operations.empty()) throw std::logic_error("Parentheses Mismatch");
                 tokens.push(std::get<Operation>(top));
             }
         }
@@ -142,17 +142,14 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                     {
                         auto top = std::move(operations.top());
                         while (!(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN)
-                               &&  Precedence::checkPrecedence(converter(std::get<Operation>(top)), operation))
+                               &&  Precedence::check(converter(std::get<Operation>(top)), operation))
                         {
                             tokens.push(std::move(std::get<Operation>(operations.top()))); operations.pop();
-                            if(!operations.empty()) top = std::get<Operation>(operations.top());
+                            if(!operations.empty()) top = operations.top();
                             else break;
                         }
                     }
                     operations.push(token);
-                    /*std::visit([&](auto &&operation){
-                        tokens.push(operation);
-                    }, std::move(token));*/
                 }
             }
             else if constexpr(std::is_same_v<std::decay_t<T>, Symbols>)
@@ -171,7 +168,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                          top = operations.top(), operations.pop())
                     {
                         operations.pop();
-                        if (operations.empty()) throw std::logic_error("Expression Mismatch");
+                        if (operations.empty()) throw std::logic_error("Parentheses Mismatch");
                         tokens.push(std::get<Operation>(top));
                     }
                 } break;

@@ -24,7 +24,7 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
         static std::greater_equal<OperatorPrecedence> comparator;
 
 		// Precedence(const decltype(precedence) &precMap) : precedence(precMap) { }
-        static bool checkPrecedence(Operator left, Operator right)
+        static bool check(Operator left, Operator right)
 			// check if left has greater or equal precedence to right
 		{
             if(std::holds_alternative<std::monostate>(left) | std::holds_alternative<std::monostate>(right)) return false;
