@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , prompt(new Prompt(this))
-    , out(new Output(nullptr))
+    , out(new Output(this))
 {
     ui->setupUi(this);
     // this->setFixedSize(370, 410);
@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete out;
 }
 
 namespace {

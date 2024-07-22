@@ -1,6 +1,7 @@
 #include <sstream>
 #include <stack>
 #include <cctype>
+#include <iostream>
 
 #include "common.h"
 #include "Parser.hpp"
@@ -168,7 +169,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                          top = operations.top(), operations.pop())
                     {
                         operations.pop();
-                        if (operations.empty()) throw std::logic_error("Parentheses Mismatch");
+                        if (operations.empty()) std::cerr << "Parentheses Mismatch";
                         tokens.push(std::get<Operation>(top));
                     }
                 } break;

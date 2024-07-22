@@ -4,7 +4,7 @@
 #include <iostream>
 
 Output::Output(QWidget *parent)
-    : QWidget{parent}, ui(new Ui::Output), stdred(new textbrowser_streambuf{ui->text})
+    : QWidget{parent, Qt::Window}, ui(new Ui::Output), stdred(new textbrowser_streambuf{ui->text})
 {
     ui->setupUi(this);
 
@@ -21,6 +21,7 @@ Output::Output(QWidget *parent)
 Output::~Output()
 {
     delete ui;
+    // close();
 }
 
 void Output::clear()
