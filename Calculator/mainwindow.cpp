@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , prompt(new Prompt(this))
+    , out(new Output(nullptr))
 {
     ui->setupUi(this);
     // this->setFixedSize(370, 410);
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->evaluation, SIGNAL(clicked()), this, SLOT(evaluate_expression()));
     connect(ui->rand, SIGNAL(clicked()), this, SLOT(generate_random()));
     connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
+    connect(ui->ShowOuput, SIGNAL(triggered(bool)), this, SLOT(output_pane(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -99,6 +101,8 @@ void MainWindow::handle_digits(QAbstractButton *button)
     // num.removefirst(); // only since Qt 6.5
 }
 
+#include<iostream>
+
 void MainWindow::handle_commands(QAbstractButton *button)
 {
     auto command = button->objectName();
@@ -115,6 +119,7 @@ void MainWindow::handle_commands(QAbstractButton *button)
         backspace();
     }
     else;
+    std::cout << "Command : " << command.toStdString();
 }
 
 void MainWindow::handle_operations(QAbstractButton *button)
@@ -280,4 +285,9 @@ void MainWindow::devel_prompt(bool)
     qDebug() << "Evaluating Custom Expression : " << expression << '\n';
     auto result = evaluator::eval(expression.toStdString());
     ui->number->setText(QString::number(result));
+}
+
+void MainWindow::output_pane(bool)
+{
+    out->show();
 }

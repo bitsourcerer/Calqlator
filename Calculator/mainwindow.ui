@@ -850,6 +850,7 @@ border-radius: 5px;</string>
      <string>Menu</string>
     </property>
     <addaction name="DevPrompt"/>
+    <addaction name="ShowOuput"/>
    </widget>
    <addaction name="MainMenu"/>
   </widget>
@@ -867,12 +868,18 @@ border-radius: 5px;</string>
     <enum>QAction::ApplicationSpecificRole</enum>
    </property>
   </action>
+  <action name="ShowOuput">
+   <property name="text">
+    <string>Evaluation Output</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="Resources.qrc"/>
  </resources>
  <connections/>
  <buttongroups>
+  <buttongroup name="commands"/>
   <buttongroup name="digits">
    <property name="exclusive">
     <bool>false</bool>
@@ -880,6 +887,5 @@ border-radius: 5px;</string>
   </buttongroup>
   <buttongroup name="functions"/>
   <buttongroup name="operations"/>
-  <buttongroup name="commands"/>
  </buttongroups>
 </ui>
