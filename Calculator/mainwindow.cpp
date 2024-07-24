@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <QDebug>
 #include <QStack>
+#include <QTimer>
 #include <QElapsedTimer>
 #include <QRandomGenerator>
 
@@ -27,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->rand, SIGNAL(clicked()), this, SLOT(generate_random()));
     connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
     connect(ui->ShowOuput, SIGNAL(triggered(bool)), out, SLOT(show()));
+    connect(out, SIGNAL(logEmitted(bool)), this, SLOT(signal_output(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -74,7 +76,7 @@ void MainWindow::evaluate_expression()
     auto result = evaluator::eval(expr.toStdString());
     auto elapsed = watch.nsecsElapsed() / 1e6;
     qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
-    std::cout << "Evaluate: " << std::quoted(expr.toStdString()) << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
+    std::cout << std::quoted(expr.toStdString()) << "| " << result << " | " << elapsed << " ms\n";
     ui->number->setText(QString::number(result));
 
     ready = paren = period = false;
@@ -289,6 +291,20 @@ void MainWindow::devel_prompt(bool)
     qDebug() << "Evaluating Custom Expression : " << expression << '\n';
     auto result = evaluator::eval(expression.toStdString());
     ui->number->setText(QString::number(result));
+}
+
+void MainWindow::signal_output(bool isError)
+{
+    static const auto original = ui->Display->styleSheet();
+    auto updated = original;
+
+    if(isError) updated.append("background-color: red;");
+    else updated.append("background-color: green;");
+    ui->Display->setStyleSheet(updated);
+
+    QTimer::singleShot(250, [&, this]{
+        ui->Display->setStyleSheet(original);
+    });
 }
 
 /*

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <list>
 
 #include "common.h"
 
@@ -10,6 +11,7 @@ namespace evaluator
 class EVALUATOR_API Lexer
 {
 public:
+    // using TokenQueue = std::queue<UnifiedToken, std::list<UnifiedToken>>;
     using TokenQueue = std::queue<UnifiedToken>;
     Lexer() = default;
     Lexer(std::string_view);
