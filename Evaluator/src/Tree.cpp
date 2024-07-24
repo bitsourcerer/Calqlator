@@ -12,6 +12,24 @@
 using namespace evaluator;
 using namespace evaluator::operations;
 
+class evaluate_error : std::exception
+{
+public:
+    evaluate_error(const std::string &message = "Unspecified") : msg("Evaluate Error | ")
+    {
+        msg.append(message);
+        msg.push_back('\n');
+    }
+
+    const char* what() const noexcept override {
+        // msg.insert(0, "Evaluate Error | ");
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
+};
+
 SyntaxTree::SyntaxTree() : root(nullptr)
 {
 }
@@ -118,6 +136,12 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
         tokens.pop();
     }
 
+    try {
+    if(expressions.empty()) {
+            std::cerr << "Nothing to Evaluate!" << '\n';
+        throw evaluate_error("Expression Tree is Empty!");
+    }
+    } catch(const evaluate_error &e) { std::cerr << e.what(); return *this; }
     root = std::move(expressions.top()); expressions.pop();
     return *this;
 }
@@ -167,5 +191,6 @@ SyntaxTree& evaluator::SyntaxTree::build(const Parser::TokenQueue& tokens)
 
 Result SyntaxTree::evaluate() const
 {
+    if(!root) return 0;
 	return root->evaluate();
 }

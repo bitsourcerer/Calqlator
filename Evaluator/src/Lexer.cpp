@@ -7,6 +7,24 @@
 using namespace evaluator;
 using namespace operations;
 
+class lexer_error : std::exception
+{
+public:
+    lexer_error(const std::string &message = "Unspecified") : msg("Syntax Error | ")
+    {
+        msg.append(message);
+        msg.push_back('\n');
+    }
+
+    const char* what() const noexcept override {
+        // std::string message = std::string("Syntax Error | ") + msg;
+        // msg.insert(0, "Syntax Error | ");
+        return msg.c_str();
+    }
+private:
+    std::string msg;
+};
+
 enum struct eTokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, LPAREN, RPAREN, UNKNOWN };
 
 Lexer::Lexer(std::string_view expr) : expression(expr), filled(!expression.empty())
@@ -32,7 +50,8 @@ Lexer::TokenQueue& Lexer::tokenize() const
     {
         decltype(expression)::value_type current = expression[i];
 
-        if(std::isspace(current)) continue;
+        try {
+        if(std::isspace(current) || std::isblank(current)) continue;
         else if(std::isdigit(current) || static_cast<Symbols>(current) == Symbols::PERIOD)
         {
             std::size_t idx = 0;
@@ -94,13 +113,17 @@ Lexer::TokenQueue& Lexer::tokenize() const
         else if(current == '(') { tokens.push(Symbols::LPAREN); previous = eTokenType::LPAREN; }
         else if(current == ')') { tokens.push(Symbols::RPAREN); previous = eTokenType::RPAREN; }
         else if(std::ispunct(current) && static_cast<Symbols>(current) == Symbols::COMMA) tokens.push(Symbols::COMMA);
-        else; // UNKNOWN TOKEN ENCOUNTERED
+        else {
+            std::cerr << "Unexpected Token : " << current << '\n';
+            tokens = TokenQueue(); // empty the tokens
+            throw lexer_error("Unknown Token!");
+        } // UNKNOWN TOKEN ENCOUNTERED
+        } catch(const lexer_error &e) { std::cerr << e.what(); return tokens; }
     }
     return tokens;
 }
 
 Lexer::TokenQueue& Lexer::getTokens() const { return tokens; }
-
 
 /*
     for(auto current : expression)

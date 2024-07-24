@@ -11,7 +11,8 @@
 #include <map>
 #include <string_view>
 #include <variant>
-#include <iosfwd>
+//#include <iosfwd>
+#include <iostream>
 #include <stack>
 // All standard includes : END
 
@@ -39,7 +40,7 @@ namespace evaluator
 	{
 		using OperationEnumeratorUnderlyingType = char;
 
-		enum EVALUATOR_API BinaryOPS : OperationEnumeratorUnderlyingType
+        enum BinaryOPS : OperationEnumeratorUnderlyingType
 		{
 			SUBTRACTION = '-',
 			ADDITION = '+',
@@ -51,13 +52,13 @@ namespace evaluator
 		};
 
 
-        enum class EVALUATOR_API UnaryOPS : OperationEnumeratorUnderlyingType
+        enum class UnaryOPS : OperationEnumeratorUnderlyingType
 		{
             NEGATION = '-',
             FACTORIAL = '!'
 		};
 
-        enum class EVALUATOR_API Functions : OperationEnumeratorUnderlyingType
+        enum class Functions : OperationEnumeratorUnderlyingType
 		{
 			SIN = 's',
 			COS = 'c',
@@ -67,12 +68,17 @@ namespace evaluator
 			LOG10 = 'L'
         };
 
-        enum class EVALUATOR_API Symbols : OperationEnumeratorUnderlyingType
+        enum class Symbols : OperationEnumeratorUnderlyingType
         {
             LPAREN = '(',
             RPAREN = ')',
             COMMA = ',',
             PERIOD = '.'
+        };
+
+        enum class Sentinels : OperationEnumeratorUnderlyingType
+        {
+            FUNC_BEG = '(', FUNC_END = ')'
         };
 
         extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;
@@ -82,6 +88,6 @@ namespace evaluator
 	}
 
     using Operation = std::variant</* std::monostate, */operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
-    using UnifiedToken = std::variant<Operation, operations::Symbols, Operand>;
+    using UnifiedToken = std::variant<Operation, operations::Symbols, operations::Sentinels, Operand>;
     using Token = std::variant<Operand, Operation>;
 }

@@ -1,7 +1,6 @@
 #include <sstream>
 #include <stack>
 #include <cctype>
-#include <iostream>
 
 #include "common.h"
 #include "Parser.hpp"
@@ -9,6 +8,18 @@
 
 using namespace evaluator;
 using namespace evaluator::operations;
+
+// TODO : create custom exceptions for modules, like parse_error for Parser
+class parse_error : std::logic_error
+{
+public:
+    parse_error(const std::string &message = "Unspecifed") : std::logic_error("Parse Error | " + message) {}
+    /*
+    const char* what() const noexcept override {
+    }
+private:
+    std::string msg = "Parse Error | "; */
+};
 
 Parser::Parser(std::string_view exp) : input(exp)
 {
@@ -134,6 +145,12 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                 if (std::holds_alternative<Functions>(token)) {
                     // operations.push(token);
                     lexed.pop();
+                    if(lexed.empty() || !std::holds_alternative<Operand>(lexed.front())) {
+                        std::string fname = "unknown";
+                        for(const auto &[name, id] : operations::funcids) if(id == std::get<Functions>(token)) fname = name;
+                        std::cerr << "Missing operand to the function : " << fname << '\n';
+                        throw parse_error("Operand Missing");
+                    }
                     tokens.emplace(std::move(std::get<Operand>(lexed.front())));
                     tokens.push(token);
                 }
@@ -147,7 +164,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                         {
                             tokens.push(std::move(std::get<Operation>(operations.top()))); operations.pop();
                             if(!operations.empty()) top = operations.top();
-                            else break;
+                            else { std::cerr << "LParen Expected '('"; break;}
                         }
                     }
                     operations.push(token);
@@ -163,22 +180,26 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
 
                 case Symbols::RPAREN:
                 {
-                    if (operations.empty()) break;
+                    if (operations.empty()) { std::cerr << "Parentheses Mismatch : Extra closing parentheses encountered!\n"; break; }
                     for(auto top = operations.top();
                          !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN);
                          top = operations.top(), operations.pop())
                     {
                         operations.pop();
-                        if (operations.empty()) std::cerr << "Parentheses Mismatch";
+                        if (operations.empty()) {
+                            std::cerr << "Parentheses Mismatch : Expected corresponding opening parentheses!\n";
+                            throw parse_error("Parentheses Mismatch");
+                        }
                         tokens.push(std::get<Operation>(top));
                     }
                 } break;
 
                 default:
+                    std::cerr << "Unexpected Symbol : " << static_cast<char>(symbol) << std::endl;
                     break;
                 }
             }
-            else throw std::runtime_error("Unknown Token encountered in Parser::parse!");
+            else throw parse_error("Unknown Token encountered while parsing!");
         }, current);
         lexed.pop();
     }

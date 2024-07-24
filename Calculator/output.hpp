@@ -12,6 +12,8 @@ class Output;
 class OutputRedirector;
 class textbrowser_streambuf;
 
+enum class StreamType { STD_OUT, STD_ERR };
+
 class Output : public QWidget
 {
     Q_OBJECT
@@ -19,13 +21,16 @@ public:
     explicit Output(QWidget *parent = nullptr);
     ~Output();
 
+signals:
+    void logEmitted(bool); // to signal to other widgets that the log is received (the param tells if its an error or not)
+
 private slots:
     void clear(); // clear text browser
-    void appendText(const QString&);
+    void appendText(const QString&, StreamType type);
 
 private:
     Ui::Output *ui;
-    textbrowser_streambuf *stdred;
+    textbrowser_streambuf *redcerr, *redcout;
     std::streambuf *coutBuf, *cerrBuf;
     // OutputRedirector *stdred;
 };
@@ -54,19 +59,20 @@ class textbrowser_streambuf : public QObject, public std::streambuf
     Q_OBJECT
 
 public:
-    textbrowser_streambuf(QTextBrowser *browser);
-    virtual ~textbrowser_streambuf();
+    textbrowser_streambuf(QTextBrowser *browser, StreamType type = StreamType::STD_OUT);
+    // virtual ~textbrowser_streambuf();
 
 protected:
     traits_type::int_type overflow(int_type c) override;
-    std::streamsize xsputn(const char *s, std::streamsize n) override;
+    std::streamsize xsputn(const char_type *s, std::streamsize n) override;
 
 signals:
-    void received(const QString&);
+    void received(const QString&, StreamType);
 
 private:
     QTextBrowser *text;
     std::string buffer;
+    StreamType type;
 };
 
 #endif // OUTPUT_HPP

@@ -27,7 +27,7 @@ private slots:
     void handle_parentheses(); // for parenthesis exclusively
     void generate_random(); // get random number [0, 1) when rand is clicked
     void devel_prompt(bool);
-    void output_pane(bool);
+    // void output_pane(bool);
 
 private:
     Ui::MainWindow *ui;

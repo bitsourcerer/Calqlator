@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "Eval.h"
 
+#include <iostream>
+#include <iomanip>
 #include <QDebug>
 #include <QStack>
 #include <QElapsedTimer>
@@ -24,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->evaluation, SIGNAL(clicked()), this, SLOT(evaluate_expression()));
     connect(ui->rand, SIGNAL(clicked()), this, SLOT(generate_random()));
     connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
-    connect(ui->ShowOuput, SIGNAL(triggered(bool)), this, SLOT(output_pane(bool)));
+    connect(ui->ShowOuput, SIGNAL(triggered(bool)), out, SLOT(show()));
 }
 
 MainWindow::~MainWindow()
@@ -72,6 +74,7 @@ void MainWindow::evaluate_expression()
     auto result = evaluator::eval(expr.toStdString());
     auto elapsed = watch.nsecsElapsed() / 1e6;
     qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
+    std::cout << "Evaluate: " << std::quoted(expr.toStdString()) << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
     ui->number->setText(QString::number(result));
 
     ready = paren = period = false;
@@ -120,7 +123,7 @@ void MainWindow::handle_commands(QAbstractButton *button)
         backspace();
     }
     else;
-    std::cout << "Command : " << command.toStdString();
+    std::cerr << "Command : " << command.toStdString();
 }
 
 void MainWindow::handle_operations(QAbstractButton *button)
@@ -288,7 +291,9 @@ void MainWindow::devel_prompt(bool)
     ui->number->setText(QString::number(result));
 }
 
+/*
 void MainWindow::output_pane(bool)
 {
     out->show();
 }
+*/
