@@ -11,20 +11,21 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    output.cpp \
-    prompt.cpp
+    src/output.cpp \
+    src/prompt.cpp
 
 HEADERS += \
     mainwindow.hpp \
-    output.hpp \
-    prompt.hpp
+    include/output.hpp \
+    include/prompt.hpp
 
 FORMS += \
     mainwindow.ui \
-    output.ui \
-    prompt.ui
+    forms/output.ui \
+    forms/prompt.ui
 
 EVALUATORPATH = $$PWD/../Evaluator
+INCLUDEPATH += include
 INCLUDEPATH += $$EVALUATORPATH
 DEPENDPATH += $$EVALUATORPATH
 
@@ -60,4 +61,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    Resources.qrc
+    res/Resources.qrc

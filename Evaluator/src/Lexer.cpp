@@ -99,7 +99,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
             }
             if(ite != expression.cend()) tokens.push(Sentinels::FUNC_END);
             else throw except::lexer_error("Function didn't close!");
-            /*
+
             Operand value = std::stod(expression.substr(fn.length() + i + 1, std::distance(ite, std::next(itb, fn.length() + 1))));
             tokens.push(value);
             */

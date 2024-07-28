@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->rand, SIGNAL(clicked()), this, SLOT(generate_random()));
     connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
     connect(ui->ShowOuput, SIGNAL(triggered(bool)), out, SLOT(show()));
-    connect(out, SIGNAL(logEmitted(bool)), this, SLOT(signal_output(bool)));
+    // connect(out, SIGNAL(logEmitted(bool)), this, SLOT(signal_output(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -301,6 +301,7 @@ void MainWindow::devel_prompt(bool)
     try {
     auto result = evaluator::eval(expression.toStdString());
     ui->number->setText(QString::number(result));
+    signal_output(false, "green");
     } catch(const std::exception& e) {
         std::cerr << e.what();
         ui->number->setText("Error");
@@ -308,13 +309,13 @@ void MainWindow::devel_prompt(bool)
     }
 }
 
-void MainWindow::signal_output(bool isError)
+void MainWindow::signal_output(bool isError, QString defaultColor)
 {
     static const auto original = ui->Display->styleSheet();
     auto updated = original;
 
     if(isError) { updated.append("background-color: red;"); out->show(); }
-    else updated.append("background-color: grey;");
+    else updated.append("background-color: " + defaultColor + ';');
     ui->Display->setStyleSheet(updated);
 
     QTimer::singleShot(150, [&, this]{
