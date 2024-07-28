@@ -41,6 +41,7 @@ void Output::appendText(const QString &text, StreamType type)
     if(type == StreamType::STD_ERR) {
         ui->text->setTextColor(Qt::red);
         ui->text->insertPlainText("ERROR :: ");
+        this->show(); // if error is logged open the output pane
     } else {
         ui->text->setTextColor(Qt::black);
         ui->text->insertPlainText("LOG :: ");

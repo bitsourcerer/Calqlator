@@ -116,8 +116,6 @@ void MainWindow::handle_digits(QAbstractButton *button)
     // num.removefirst(); // only since Qt 6.5
 }
 
-#include<iostream>
-
 void MainWindow::handle_commands(QAbstractButton *button)
 {
     auto command = button->objectName();
@@ -134,7 +132,7 @@ void MainWindow::handle_commands(QAbstractButton *button)
         backspace();
     }
     else;
-    std::cerr << "Command : " << command.toStdString();
+    std::cout << "Command : " << command.toStdString() << '\n';
 }
 
 void MainWindow::handle_operations(QAbstractButton *button)
@@ -309,13 +307,13 @@ void MainWindow::devel_prompt(bool)
     }
 }
 
-void MainWindow::signal_output(bool isError, QString defaultColor)
+void MainWindow::signal_output(bool isError, QString color)
 {
     static const auto original = ui->Display->styleSheet();
     auto updated = original;
 
     if(isError) { updated.append("background-color: red;"); out->show(); }
-    else updated.append("background-color: " + defaultColor + ';');
+    else updated.append("background-color: " + color + ';');
     ui->Display->setStyleSheet(updated);
 
     QTimer::singleShot(150, [&, this]{
