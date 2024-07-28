@@ -11,6 +11,20 @@
 
 namespace evaluator
 {
+namespace except {
+// TODO : create custom exceptions for modules, like parse_error for Parser
+class parse_error : public std::logic_error
+{
+public:
+    parse_error(const std::string &message = "Unspecifed") : std::logic_error("Parse Error | " + message) {}
+    /*
+    const char* what() const noexcept override {
+    }
+private:
+    std::string msg = "Parse Error | "; */
+};
+}
+
 	class EVALUATOR_API Parser
     {
 	public:
@@ -34,4 +48,25 @@ namespace evaluator
 	};
 
     Parser::TokenQueue&& ShuntingYard(Parser&);
+
+    /*
+    namespace test
+    {
+
+    struct BinaryOperation {
+        operations::BinaryOPS type = operations::BinaryOPS::UNSPECIFIED;
+        OperatorPrecedence precdence = OperatorPrecedence::MIN;
+    };
+
+    struct UnaryOperation {
+        operations::UnaryOPS type = operations::UnaryOPS::UNSPECIFIED;
+        OperatorPrecedence precedence = OperatorPrecedence::MIN;
+    };
+
+    struct FunctionOperation {
+        operations::Functions type = operations::Functions::UNSPECIFIED;
+        unsigned arg_count = 0;
+    };
+
+    }*/
 }

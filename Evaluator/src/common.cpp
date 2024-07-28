@@ -32,6 +32,7 @@ EVALUATOR_API const std::unordered_map<operations::Functions, std::function<Resu
 	{ Functions::COS , [](Operand op) -> Result { return std::cos(util::ConvertDegToRad(op)); } },
 	{ Functions::TAN , [](Operand op) -> Result { return std::tan(util::ConvertDegToRad(op)); } },
 	{ Functions::SQRT , [](Operand op) -> Result { return std::sqrt(op); } },
+    { Functions::SQRT , [](Operand op) -> Result { return std::log(op); } },
 	{ Functions::LOG10 , [](Operand op) -> Result { return std::log10(op); } },
 	{ Functions::LOG2, [](Operand op) -> Result { return std::log2(op); } }
 };
@@ -43,7 +44,8 @@ EVALUATOR_API const std::map<std::string_view, Functions> operations::funcids
 	{ "tan", Functions::TAN },
 	{ "sqrt", Functions::SQRT },
 	{ "logten", Functions::LOG10 },
-	{ "logtwo", Functions::LOG2 }
+    { "logtwo", Functions::LOG2 },
+    { "logn", Functions::LOGN }
 };
 
-extern std::ostream& dbglog;
+// extern std::ostream& dbglog;

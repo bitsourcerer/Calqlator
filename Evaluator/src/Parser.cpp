@@ -9,18 +9,6 @@
 using namespace evaluator;
 using namespace evaluator::operations;
 
-// TODO : create custom exceptions for modules, like parse_error for Parser
-class parse_error : std::logic_error
-{
-public:
-    parse_error(const std::string &message = "Unspecifed") : std::logic_error("Parse Error | " + message) {}
-    /*
-    const char* what() const noexcept override {
-    }
-private:
-    std::string msg = "Parse Error | "; */
-};
-
 Parser::Parser(std::string_view exp) : input(exp)
 {
 }
@@ -128,31 +116,35 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
     // Consult Shunting Yard Algorithm's Wiki!
     Parser::VecStack<UnifiedToken> operations;
     VariantConverter converter;
-    auto &tokens = this->tokens;
+    bool processFunction = false;
 
     while(!lexed.empty())
     {
-        auto &&current = std::move(lexed.front());
+        auto current = std::move(lexed.front());
+
         std::visit([&](auto &&token){
             using T = std::decay_t<decltype(token)>;
             // static_assert(std::is_same_v<T, OperationEnumeratorUnderlyingType>, "for some reason T is being converted to underlying type!");
-            if constexpr(std::is_same_v<std::decay_t<T>, Operand>)
+            if constexpr(std::is_same_v<T, Operand>)
             {
                 tokens.push(token);
             }
-            else if constexpr(std::is_same_v<std::decay_t<T>, Operation>) // Operation itself is a variant
+            else if constexpr(std::is_same_v<T, Operation>) // Operation itself is a variant
             {
                 if (std::holds_alternative<Functions>(token)) {
                     // operations.push(token);
-                    lexed.pop();
+                    // lexed.pop();
+                    /*
                     if(lexed.empty() || !std::holds_alternative<Operand>(lexed.front())) {
                         std::string fname = "unknown";
                         for(const auto &[name, id] : operations::funcids) if(id == std::get<Functions>(token)) fname = name;
                         std::cerr << "Missing operand to the function : " << fname << '\n';
-                        throw parse_error("Operand Missing");
+                        throw except::parse_error("Operand Missing");
                     }
-                    tokens.emplace(std::move(std::get<Operand>(lexed.front())));
-                    tokens.push(token);
+                    */
+                    // tokens.emplace(std::move(std::get<Operand>(lexed.front())));
+                    // push function after pushing subexpr (temporarily save it and add it after RPAREN)
+                    operations.push(token);
                 }
                 else {
                     auto operation = converter(token);
@@ -170,7 +162,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                     operations.push(token);
                 }
             }
-            else if constexpr(std::is_same_v<std::decay_t<T>, Symbols>)
+            else if constexpr(std::is_same_v<T, Symbols>)
             {
                 switch(auto symbol = token)
                 {
@@ -180,17 +172,30 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
 
                 case Symbols::RPAREN:
                 {
-                    if (operations.empty()) { std::cerr << "Parentheses Mismatch : Extra closing parentheses encountered!\n"; break; }
+                    if (operations.empty()) { throw except::parse_error("Parentheses Mismatch : Extra closing parentheses encountered!\n"); }
+                    // auto top = operations.top(); operations.pop();
                     for(auto top = operations.top();
                          !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN);
-                         top = operations.top(), operations.pop())
+                         top = operations.top() /*, operations.pop()*/)
                     {
                         operations.pop();
                         if (operations.empty()) {
                             std::cerr << "Parentheses Mismatch : Expected corresponding opening parentheses!\n";
-                            throw parse_error("Parentheses Mismatch");
+                            throw except::parse_error("Parentheses Mismatch");
                         }
                         tokens.push(std::get<Operation>(top));
+                    }
+                    if(std::get<Symbols>(operations.top()) != Symbols::LPAREN)
+                        throw except::parse_error("Parenthese Mismatch | Missing Opening Paren");
+                    else /* Not Required */
+                        operations.pop();
+
+                    if(auto top = operations.top();
+                        std::holds_alternative<Operation>(top)
+                        && std::holds_alternative<Functions>(std::get<Operation>(top)))
+                    {
+                        tokens.push(std::get<Operation>(top));
+                        operations.pop();
                     }
                 } break;
 
@@ -199,15 +204,35 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                     break;
                 }
             }
-            else throw parse_error("Unknown Token encountered while parsing!");
+            else if constexpr(std::is_same_v<T, Sentinels>)
+            {
+                switch(auto sentinel = token)
+                {
+                case Sentinels::FUNC_BEG:
+                {
+                    processFunction = true;
+                    // funcArgTokenCount = tokens.size();
+                } break;
+                case Sentinels::FUNC_END:
+                {
+                    processFunction = false;
+                    // funcArgTokenCount = tokens.size() - funcArgTokenCount;
+                } break;
+                default:
+                    throw except::parse_error("Unknown Sentinel!");
+                }
+            }
+            else throw except::parse_error("Unknown Token encountered while parsing!");
         }, current);
         lexed.pop();
     }
 
     while (!operations.empty())
     {
-        if(std::holds_alternative<Operation>(operations.top()))
+        if (std::holds_alternative<Operation>(operations.top()))
             tokens.push(std::move(std::get<Operation>(operations.top())));
+        else if (std::holds_alternative<Symbols>(operations.top()) && std::get<Symbols>(operations.top()) == Symbols::LPAREN)
+            throw except::parse_error("Parentheses Mismatch : Extra Parentheses encountered!");
         operations.pop();
     }
 

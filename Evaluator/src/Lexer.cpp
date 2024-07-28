@@ -7,24 +7,6 @@
 using namespace evaluator;
 using namespace operations;
 
-class lexer_error : std::exception
-{
-public:
-    lexer_error(const std::string &message = "Unspecified") : msg("Syntax Error | ")
-    {
-        msg.append(message);
-        msg.push_back('\n');
-    }
-
-    const char* what() const noexcept override {
-        // std::string message = std::string("Syntax Error | ") + msg;
-        // msg.insert(0, "Syntax Error | ");
-        return msg.c_str();
-    }
-private:
-    std::string msg;
-};
-
 enum struct eTokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, LPAREN, RPAREN, UNKNOWN };
 
 Lexer::Lexer(std::string_view expr) : expression(expr), filled(!expression.empty())
@@ -44,13 +26,13 @@ Lexer::TokenQueue& Lexer::tokenize() const
      *             std::remove_if(this->expression.cbegin(), this->expression.cend(), isspace));
      */
     auto &tokens = this->tokens;
+    bool func = false; // to mark if currently processing function subexpr
 
     eTokenType previous = eTokenType::UNKNOWN;
     for(decltype(expression)::size_type i = 0; i < expression.length(); ++i)
     {
         decltype(expression)::value_type current = expression[i];
 
-        try {
         if(std::isspace(current) || std::isblank(current)) continue;
         else if(std::isdigit(current) || static_cast<Symbols>(current) == Symbols::PERIOD)
         {
@@ -96,29 +78,60 @@ Lexer::TokenQueue& Lexer::tokenize() const
         }
         else if(std::isalpha(current))
         {
+            auto itb = expression.cbegin() + i;
             auto ite = std::find(expression.cbegin() + i, expression.cend(), ')'); // closing of function
             std::string::size_type start = expression.find_first_of('(', i+2);
             auto fn = expression.substr(i, start - i);
-            auto itb = expression.cbegin() + i;
 
             if (operations::funcids.find(fn) == funcids.end()) continue; // not a registered function (not found in registry map)
+            // func = true;
             tokens.emplace(Operation{funcids.at(fn)});
 
+            /*
+            tokens.push(Sentinels::FUNC_BEG);
+            Lexer funcTokenizer;
+            funcTokenizer.set(std::string(std::next(itb + (start - i)), ite));
+            funcTokenizer.tokenize();
+            auto funcTokens = funcTokenizer.getTokens();
+            while(!funcTokens.empty()) {
+                tokens.push(std::move(funcTokens.front()));
+                funcTokens.pop();
+            }
+            if(ite != expression.cend()) tokens.push(Sentinels::FUNC_END);
+            else throw except::lexer_error("Function didn't close!");
+            /*
             Operand value = std::stod(expression.substr(fn.length() + i + 1, std::distance(ite, std::next(itb, fn.length() + 1))));
             tokens.push(value);
+            */
+            // i += std::distance(itb, ite);
+            i += fn.length() - 1;
             previous = eTokenType::FUNCTION;
-
-            i += std::distance(itb, ite);
         }
-        else if(current == '(') { tokens.push(Symbols::LPAREN); previous = eTokenType::LPAREN; }
-        else if(current == ')') { tokens.push(Symbols::RPAREN); previous = eTokenType::RPAREN; }
+        else if(current == '(')
+        {
+            if(previous == eTokenType::FUNCTION && false) /* DISABLED */ {
+                func = true;
+                tokens.push(Sentinels::FUNC_BEG);
+            }
+            else
+                tokens.push(Symbols::LPAREN);
+            previous = eTokenType::LPAREN;
+        }
+        else if(current == ')')
+        {
+            if(func) {
+                tokens.push(Sentinels::FUNC_END);
+                func = false;
+            }
+            else tokens.push(Symbols::RPAREN);
+            previous = eTokenType::RPAREN;
+        }
         else if(std::ispunct(current) && static_cast<Symbols>(current) == Symbols::COMMA) tokens.push(Symbols::COMMA);
         else {
-            std::cerr << "Unexpected Token : " << current << '\n';
+            // std::cerr << "Unexpected Token : " << current << '\n';
             tokens = TokenQueue(); // empty the tokens
-            throw lexer_error("Unknown Token!");
+            throw except::lexer_error("Unknown Token! " + std::string(1, current));
         } // UNKNOWN TOKEN ENCOUNTERED
-        } catch(const lexer_error &e) { std::cerr << e.what(); return tokens; }
     }
     return tokens;
 }

@@ -55,7 +55,8 @@ namespace evaluator
         enum class UnaryOPS : OperationEnumeratorUnderlyingType
 		{
             NEGATION = '-',
-            FACTORIAL = '!'
+            FACTORIAL = '!',
+            UNSPECIFIED = 'x'
 		};
 
         enum class Functions : OperationEnumeratorUnderlyingType
@@ -65,7 +66,9 @@ namespace evaluator
 			TAN = 't',
 			SQRT = 'r',
 			LOG2 = 'l',
-			LOG10 = 'L'
+            LOG10 = 'L',
+            LOGN = 'e',
+            UNSPECIFIED = 'x'
         };
 
         enum class Symbols : OperationEnumeratorUnderlyingType

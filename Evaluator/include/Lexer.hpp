@@ -7,6 +7,25 @@
 
 namespace evaluator
 {
+namespace except {
+class lexer_error : public std::exception
+{
+public:
+    lexer_error(const std::string &message = "Unspecified") : msg("Syntax Error | ")
+    {
+        msg.append(message);
+        msg.push_back('\n');
+    }
+
+    const char* what() const noexcept override {
+        // std::string message = std::string("Syntax Error | ") + msg;
+        // msg.insert(0, "Syntax Error | ");
+        return msg.c_str();
+    }
+private:
+    std::string msg;
+};
+}
 
 class EVALUATOR_API Lexer
 {

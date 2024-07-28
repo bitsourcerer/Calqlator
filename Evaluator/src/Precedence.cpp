@@ -13,5 +13,12 @@ const EVALUATOR_API std::map<Precedence::Operator, OperatorPrecedence> Precedenc
 	{ BinaryOPS::EXPONENTIATION, EXP },
     { BinaryOPS::MODULATION, MOD },
     { UnaryOPS::NEGATION, UNR },
-    { UnaryOPS::FACTORIAL, UNR }
+    { UnaryOPS::FACTORIAL, UNR },
+    { Functions::SIN, FUN },
+    { Functions::COS, FUN },
+    { Functions::TAN, FUN },
+    { Functions::SQRT, FUN },
+    { Functions::LOG2, FUN },
+    { Functions::LOG10, FUN },
+    { Functions::LOGN, FUN }
 };

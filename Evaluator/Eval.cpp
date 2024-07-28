@@ -16,9 +16,14 @@ evl::Evaluator expreval;
 }
 
 namespace evaluator {
-Operand eval(std::string_view expression)
+Operand eval(std::string_view expression) noexcept(false)
 {
+    try {
     expreval.feed(static_cast<std::string>(expression));
+    } catch(const std::exception&) {
+        throw;
+    }
+
     return expreval.evaluate();
 }
 }

@@ -73,7 +73,16 @@ void MainWindow::evaluate_expression()
      */
 
     watch.start();
-    auto result = evaluator::eval(expr.toStdString());
+    Operand result = 0;
+    try {
+    result = evaluator::eval(expr.toStdString());
+    } catch(const std::exception &e) {
+        std::cerr << e.what();
+        ui->number->setText("Error");
+        ready = paren = period = false;
+        return;
+    }
+
     auto elapsed = watch.nsecsElapsed() / 1e6;
     qDebug() << "Evaluate: " << expr << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
     std::cout << std::quoted(expr.toStdString()) << "| " << result << " | " << elapsed << " ms\n";
@@ -289,8 +298,14 @@ void MainWindow::devel_prompt(bool)
     if(prompt->exec() != QDialog::Accepted) return;
     auto expression = prompt->getExpression();
     qDebug() << "Evaluating Custom Expression : " << expression << '\n';
+    try {
     auto result = evaluator::eval(expression.toStdString());
     ui->number->setText(QString::number(result));
+    } catch(const std::exception& e) {
+        std::cerr << e.what();
+        ui->number->setText("Error");
+        ready = false;
+    }
 }
 
 void MainWindow::signal_output(bool isError)
@@ -298,11 +313,11 @@ void MainWindow::signal_output(bool isError)
     static const auto original = ui->Display->styleSheet();
     auto updated = original;
 
-    if(isError) updated.append("background-color: red;");
-    else updated.append("background-color: green;");
+    if(isError) { updated.append("background-color: red;"); out->show(); }
+    else updated.append("background-color: grey;");
     ui->Display->setStyleSheet(updated);
 
-    QTimer::singleShot(250, [&, this]{
+    QTimer::singleShot(150, [&, this]{
         ui->Display->setStyleSheet(original);
     });
 }

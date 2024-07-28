@@ -648,7 +648,7 @@ border-radius: 5px;</string>
      <string notr="true">functions</string>
     </attribute>
    </widget>
-   <widget class="QPushButton" name="logn">
+   <widget class="QPushButton" name="loge">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -882,13 +882,13 @@ border-radius: 5px;</string>
  </resources>
  <connections/>
  <buttongroups>
+  <buttongroup name="functions"/>
   <buttongroup name="operations"/>
-  <buttongroup name="commands"/>
   <buttongroup name="digits">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="functions"/>
+  <buttongroup name="commands"/>
  </buttongroups>
 </ui>

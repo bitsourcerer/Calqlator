@@ -14,12 +14,14 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
 		MOD = 4,
         UNR = 5, // for Unary Operations
 		UNK, // UNKNOWN
-		MAX // Maximum (for parenthesized subexpressions)
+        MAX, // Maximum (for parenthesized subexpressions and functions)
+        FUN = MAX
 	};
 
 	struct EVALUATOR_API Precedence // For Priority Queue
 	{
-        using Operator = std::variant<std::monostate, operations::BinaryOPS, operations::UnaryOPS>;
+        // using Operator = std::variant<std::monostate, operations::BinaryOPS, operations::UnaryOPS, operations::Functions>;
+        using Operator = Operation;
         static const std::map < Operator, OperatorPrecedence > precedenceTable;
         static std::greater_equal<OperatorPrecedence> comparator;
 
@@ -27,7 +29,8 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
         static bool check(Operator left, Operator right)
 			// check if left has greater or equal precedence to right
 		{
-            if(std::holds_alternative<std::monostate>(left) | std::holds_alternative<std::monostate>(right)) return false;
+            // monostate generally represents functions but we can do better by adding Functions in Operator Variant
+            // if(std::holds_alternative<std::monostate>(left) || std::holds_alternative<std::monostate>(right)) return false;
             const auto& lop = precedenceTable.find(left)->second;
             const auto& rop = precedenceTable.find(right)->second;
 			// return std::less<OperatorPrecedence>{}(lop, rop);
@@ -49,7 +52,8 @@ enum OperatorPrecedence : operations::OperationEnumeratorUnderlyingType //std::u
     {
         Precedence::Operator operator()(operations::BinaryOPS op) const { return op; }
         Precedence::Operator operator()(operations::UnaryOPS op) const { return op; }
-        Precedence::Operator operator()(operations::Functions) const { return Precedence::Operator{}; }
+        Precedence::Operator operator()(operations::Functions op) const { return op; }
+        Precedence::Operator operator()(...) const { return Precedence::Operator{}; }
 
         Precedence::Operator operator()(Operation op) const {
             return std::visit([this](const auto &o) {
