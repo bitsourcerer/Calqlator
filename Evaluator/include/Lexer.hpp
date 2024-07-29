@@ -29,6 +29,7 @@ private:
 
 class EVALUATOR_API Lexer
 {
+    friend class Evaluator;
 public:
     // using TokenQueue = std::queue<UnifiedToken, std::list<UnifiedToken>>;
     using TokenQueue = std::queue<UnifiedToken>;
@@ -42,6 +43,10 @@ private:
     std::string expression;
     bool filled = false;
     mutable TokenQueue tokens;
+
+    void clear() const {
+        if(!tokens.empty()) tokens = TokenQueue();
+    }
 };
 
 }

@@ -2,6 +2,9 @@
 #include "ui_output.h"
 
 #include <iostream>
+#include <string>
+#include <ctime>
+#include <QDateTime>
 
 Output::Output(QWidget *parent)
     : QWidget{parent, Qt::Window}, ui(new Ui::Output)
@@ -18,8 +21,18 @@ Output::Output(QWidget *parent)
     coutBuf = std::cout.rdbuf(redcout);
     cerrBuf = std::cerr.rdbuf(redcerr);
 
+    /*
+     * std::cout << std::unitbuf;
+     * std::cerr << std::unitbuf;
+     */
+
     ui->text->setTextColor(Qt::darkGreen);
-    ui->text->append(QString("<----------|| Beginning of the Output ||---------->") + '\n');
+    {
+        QDateTime dateTime = QDateTime::fromString(QString("%1 %2").arg(__DATE__).arg(__TIME__), "MMM dd yyyy hh:mm:ss");
+
+        ui->text->append(QString("<<<---------------------- CALCULATOR ---------------------->>>"));
+        ui->text->append("Compiled on: " + dateTime.toString("dd MMM yyyy @ hh:mm:ss") + '\n');
+    }
     ui->text->moveCursor(QTextCursor::End);
 }
 

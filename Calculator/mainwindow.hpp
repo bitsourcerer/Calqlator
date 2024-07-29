@@ -30,6 +30,9 @@ private slots:
     void signal_output(bool, QString = "grey");
     // void output_pane(bool);
 
+signals:
+    void evaluated(bool); // signal emitted when evaluating expression (bool signifies success)
+
 private:
     Ui::MainWindow *ui;
     Prompt *prompt;

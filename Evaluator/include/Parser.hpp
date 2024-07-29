@@ -16,7 +16,7 @@ namespace except {
 class parse_error : public std::logic_error
 {
 public:
-    parse_error(const std::string &message = "Unspecifed") : std::logic_error("Parse Error | " + message) {}
+    parse_error(const std::string &message = "Unspecifed") : std::logic_error("Parse Error | " + message + "\n") {}
     /*
     const char* what() const noexcept override {
     }
@@ -27,6 +27,7 @@ private:
 
 	class EVALUATOR_API Parser
     {
+        friend class Evaluator;
 	public:
         using TokenQueue = std::queue<Token>; // using std::list as backend increases time of the first evaluation and doesnt yield much
         template <typename T> using VecStack = std::stack<T, std::vector<T>>;
@@ -45,6 +46,9 @@ private:
         // mutable std::string output; // removed permanently
         mutable TokenQueue tokens;
         // static TokenQueue&& ShuntingYard(Parser *const);
+        void clear() const {
+            while(!tokens.empty()) tokens.pop();
+        }
 	};
 
     Parser::TokenQueue&& ShuntingYard(Parser&);

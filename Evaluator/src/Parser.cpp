@@ -156,7 +156,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                         {
                             tokens.push(std::move(std::get<Operation>(operations.top()))); operations.pop();
                             if(!operations.empty()) top = operations.top();
-                            else { std::cerr << "LParen Expected '('"; break;}
+                            else break;
                         }
                     }
                     operations.push(token);
@@ -172,7 +172,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
 
                 case Symbols::RPAREN:
                 {
-                    if (operations.empty()) { throw except::parse_error("Parentheses Mismatch : Extra closing parentheses encountered!\n"); }
+                    if (operations.empty()) { throw except::parse_error("Parentheses Mismatch : Extra closing parentheses encountered!"); }
                     // auto top = operations.top(); operations.pop();
                     for(auto top = operations.top();
                          !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN);
@@ -180,8 +180,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                     {
                         operations.pop();
                         if (operations.empty()) {
-                            std::cerr << "Parentheses Mismatch : Expected corresponding opening parentheses!\n";
-                            throw except::parse_error("Parentheses Mismatch");
+                            throw except::parse_error("Parentheses Mismatch : Expected corresponding opening parentheses!");
                         }
                         tokens.push(std::get<Operation>(top));
                     }
@@ -238,3 +237,10 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
 
     return std::move(tokens);
 }
+
+/*
+void Parser::clear() const
+{
+    while(!tokens.empty()) tokens.pop();
+}
+*/

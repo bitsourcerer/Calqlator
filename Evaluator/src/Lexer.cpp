@@ -56,14 +56,6 @@ Lexer::TokenQueue& Lexer::tokenize() const
              * (either its the EOF or its something else i.e paren, operator)
              * if the previous token is an operator then this one is unary
             */
-            /*
-            decltype(expression)::value_type previous = i > 0 ? expression[i - 1] : 0;
-            if(std::isspace(previous)) previous = i - 1 > 0 ? expression[i - 2] : 0;
-            if(previous && (!std::isdigit(previous) || previous != Symbols::PERIOD))
-                tokens.push(operation);
-            else
-                tokens.push(static_cast<BinaryOPS>(current));
-            */
             if(previous == eTokenType::OPERATION || previous == eTokenType::LPAREN || i == 0) tokens.emplace(Operation{operation});
             else tokens.push(Operation{static_cast<BinaryOPS>(operation)});
             previous = eTokenType::OPERATION;
@@ -78,12 +70,15 @@ Lexer::TokenQueue& Lexer::tokenize() const
         }
         else if(std::isalpha(current))
         {
-            auto itb = expression.cbegin() + i;
-            auto ite = std::find(expression.cbegin() + i, expression.cend(), ')'); // closing of function
+            // auto itb = expression.cbegin() + i;
+            // auto ite = std::find(expression.cbegin() + i, expression.cend(), ')'); // closing of function
             std::string::size_type start = expression.find_first_of('(', i+2);
             auto fn = expression.substr(i, start - i);
 
-            if (operations::funcids.find(fn) == funcids.end()) continue; // not a registered function (not found in registry map)
+            if (operations::funcids.find(fn) == funcids.end()) {
+                if(start == std::string::npos) fn = expression.substr(i, expression.find_first_of(' ', i));
+                throw except::lexer_error("Name '" + fn + "' not registered!"); // not a registered function (not found in registry map)
+            }
             // func = true;
             tokens.emplace(Operation{funcids.at(fn)});
 
@@ -128,8 +123,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
         }
         else if(std::ispunct(current) && static_cast<Symbols>(current) == Symbols::COMMA) tokens.push(Symbols::COMMA);
         else {
-            // std::cerr << "Unexpected Token : " << current << '\n';
-            tokens = TokenQueue(); // empty the tokens
+            // tokens = TokenQueue(); // empty the tokens
             throw except::lexer_error("Unknown Token! " + std::string(1, current));
         } // UNKNOWN TOKEN ENCOUNTERED
     }
@@ -137,6 +131,13 @@ Lexer::TokenQueue& Lexer::tokenize() const
 }
 
 Lexer::TokenQueue& Lexer::getTokens() const { return tokens; }
+
+/*
+void Lexer::clear() const
+{
+    if(!tokens.empty()) tokens = TokenQueue();
+}
+*/
 
 /*
     for(auto current : expression)

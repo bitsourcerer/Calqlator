@@ -6,7 +6,7 @@
 #include <cassert>
 #include <cctype>
 
-#include "Parser.hpp"
+// #include "Parser.hpp"
 #include "Tree.hpp"
 
 using namespace evaluator;
@@ -38,7 +38,6 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 	// use parser to parse for tokens
 	const std::string expr (expression);
 	std::istringstream strm(expr);
-	constexpr auto Invalid = std::numeric_limits<Operand>::quiet_NaN();
 
 	// only if expression is container of Tokens it can be easier to parse
     Parser::VecStack<std::unique_ptr<Expression>> exp;
@@ -79,13 +78,16 @@ SyntaxTree& SyntaxTree::build(std::string_view expression)
 
 SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
 {
+    using except::missing_operand;
     // auto &&toks(std::move(tokens)); // very important
 
     static Parser::VecStack<std::unique_ptr<Expression>> expressions;
+    // static auto check_valid = std::bind(&SyntaxTree::validate_operands, this, std::cref(expressions), std::placeholders::_1);
 
     while (!tokens.empty())
     {
         auto &current = tokens.front();
+        auto sz = expressions.size();
         std::visit([&](const auto &token) {
             using T = std::decay_t<decltype(token)>;
             if constexpr (std::is_same_v<T, Operand>)
@@ -97,6 +99,7 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
                     using O = std::decay_t<decltype(operation)>;
                     if constexpr (std::is_same_v<O, operations::BinaryOPS>)
                     {
+                        validate_operands(sz, missing_operand::BINARY);
                         auto right = std::move(expressions.top()); expressions.pop();
                         auto left = std::move(expressions.top()); expressions.pop();
 
@@ -104,15 +107,17 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
                     }
                     else if constexpr (std::is_same_v<O, operations::UnaryOPS>)
                     {
+                        validate_operands(sz, missing_operand::UNARY);
                         auto operand = std::move(expressions.top()); expressions.pop();
                         expressions.push(std::make_unique<Unary>(std::move(operand), operation));
                     }
                     else if constexpr (std::is_same_v<O, operations::Functions>)
                     {
+                        validate_operands(sz, missing_operand::FUNCTION);
                         auto operand = std::move(expressions.top()); expressions.pop();
                         expressions.push(std::make_unique<Function>(std::move(operand), operation));
                     }
-                    else;
+                    else {};
                 }, token);
             }
             else return;
@@ -126,49 +131,6 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
     root = std::move(expressions.top()); expressions.pop();
     return *this;
 }
-
-/*
-SyntaxTree& evaluator::SyntaxTree::build(const Parser::TokenQueue& tokens)
-{
-    // auto toks(std::move(tokens)); // very important
-
-    std::stack<std::unique_ptr<Expression>> expressions;
-    while (!toks.empty())
-    {
-        auto &current = toks.front();
-        std::visit([&](const auto &token) {
-            if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operand>)
-                expressions.push(std::make_unique<Number>(token));
-            else if constexpr (std::is_same_v<std::decay_t<decltype(token)>, Operation>)
-            {
-                std::visit([&](const auto &operation) {
-                    if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::BinaryOPS>)
-                    {
-                        auto right = std::move(expressions.top()); expressions.pop();
-                        auto left = std::move(expressions.top()); expressions.pop();
-
-                        expressions.push(std::make_unique<Binary>(std::move(left), std::move(right), operation));
-                    }
-                    else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::UnaryOPS>)
-                    {
-                        expressions.push(std::make_unique<Unary>(888.888, operation));
-                    }
-                    else if constexpr (std::is_same_v<std::decay_t<decltype(operation)>, operations::Functions>)
-                    {
-                        auto operand = std::move(expressions.top()); expressions.pop();
-                        expressions.push(std::make_unique<Function>(std::move(operand), operation));
-                    }
-                    else;
-                }, token);
-            }
-            else return;
-        }, current);
-        toks.pop();
-    }
-
-    root = std::move(expressions.top()); expressions.pop();
-    return *this;
-}*/
 
 Expression* SyntaxTree::getTree() const
 {

@@ -13,6 +13,7 @@
 #include <variant>
 //#include <iosfwd>
 #include <iostream>
+#include <iomanip>
 #include <stack>
 // All standard includes : END
 
@@ -40,7 +41,7 @@ namespace evaluator
 	{
 		using OperationEnumeratorUnderlyingType = char;
 
-        enum BinaryOPS : OperationEnumeratorUnderlyingType
+        enum class BinaryOPS : OperationEnumeratorUnderlyingType
 		{
 			SUBTRACTION = '-',
 			ADDITION = '+',

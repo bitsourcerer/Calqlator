@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->DevPrompt, SIGNAL(triggered(bool)), this, SLOT(devel_prompt(bool)));
     connect(ui->ShowOuput, SIGNAL(triggered(bool)), out, SLOT(show()));
     // connect(out, SIGNAL(logEmitted(bool)), this, SLOT(signal_output(bool)));
+    connect(this, SIGNAL(evaluated(bool)), this, SLOT(signal_output(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -94,7 +95,8 @@ void MainWindow::evaluate_expression()
 void MainWindow::handle_digits(QAbstractButton *button)
 {
     if(paren) { qWarning("Only Operations Allowed!\n"); return; }
-    if(!ready) clear(); ready = true; // ready becomes true nontheless
+    if(!ready) clear();
+    ready = true; // ready becomes true nontheless
 
     auto btn = qobject_cast<QPushButton*>(button);
     auto num = ui->number->text();
@@ -297,22 +299,22 @@ void MainWindow::devel_prompt(bool)
     auto expression = prompt->getExpression();
     qDebug() << "Evaluating Custom Expression : " << expression << '\n';
     try {
-    auto result = evaluator::eval(expression.toStdString());
-    ui->number->setText(QString::number(result));
-    signal_output(false, "green");
+        auto result = evaluator::eval(expression.toStdString());
+        ui->number->setText(QString::number(result));
     } catch(const std::exception& e) {
         std::cerr << e.what();
+        signal_output(false, "green");
         ui->number->setText("Error");
         ready = false;
     }
 }
 
-void MainWindow::signal_output(bool isError, QString color)
+void MainWindow::signal_output(bool success, QString color)
 {
     static const auto original = ui->Display->styleSheet();
     auto updated = original;
 
-    if(isError) { updated.append("background-color: red;"); out->show(); }
+    if(!success) updated.append("background-color: red;");
     else updated.append("background-color: " + color + ';');
     ui->Display->setStyleSheet(updated);
 
