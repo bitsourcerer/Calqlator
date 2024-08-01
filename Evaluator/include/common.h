@@ -23,8 +23,15 @@
 #define DEBUG false
 #endif // _DEBUG
 
+#ifndef CHAR_FLUSH
+#define FLUSH_ON_NL true
+#else
+#define FLUSH_ON_NL false
+#endif
+
 namespace {
 constexpr const static bool debug = DEBUG;
+constexpr const static bool flush_on_newline = FLUSH_ON_NL;
 }
 
 #ifndef interface
@@ -95,4 +102,31 @@ namespace evaluator
     using Operation = std::variant</* std::monostate, */operations::UnaryOPS, operations::BinaryOPS, operations::Functions>;
     using UnifiedToken = std::variant<Operation, operations::Symbols, operations::Sentinels, Operand>;
     using Token = std::variant<Operand, Operation>;
-}
+
+namespace except {
+
+class evaluator_exception : public std::exception
+{
+public:
+    evaluator_exception(const std::string &message = "Generic Evaluator Error") : msg(message)
+    {
+        if constexpr (flush_on_newline)
+            if(msg.find('\n', msg.length() / 2) != std::string::npos) nl = true;
+    }
+
+    const char* what() const noexcept override
+    {
+        if constexpr(flush_on_newline)
+            if(!nl) msg.push_back('\n');
+
+        return msg.c_str();
+    }
+
+private:
+    mutable std::string msg;
+    bool nl = false;
+};
+
+} // except
+
+} // evaluator

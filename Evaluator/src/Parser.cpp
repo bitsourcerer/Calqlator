@@ -46,18 +46,6 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
             else if constexpr(std::is_same_v<T, Operation>) // Operation itself is a variant
             {
                 if (std::holds_alternative<Functions>(token)) {
-                    // operations.push(token);
-                    // lexed.pop();
-                    /*
-                    if(lexed.empty() || !std::holds_alternative<Operand>(lexed.front())) {
-                        std::string fname = "unknown";
-                        for(const auto &[name, id] : operations::funcids) if(id == std::get<Functions>(token)) fname = name;
-                        std::cerr << "Missing operand to the function : " << fname << '\n';
-                        throw except::parse_error("Operand Missing");
-                    }
-                    */
-                    // tokens.emplace(std::move(std::get<Operand>(lexed.front())));
-                    // push function after pushing subexpr (temporarily save it and add it after RPAREN)
                     operations.push(token);
                 }
                 else {
@@ -86,7 +74,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
 
                 case Symbols::RPAREN:
                 {
-                    if (operations.empty()) { throw except::parse_error("Parentheses Mismatch : Extra closing parentheses encountered!"); }
+                    if (operations.empty()) { throw except::parentheses_mismatch("extra closing paren!"); }
                     // auto top = operations.top(); operations.pop();
                     for(auto top = operations.top();
                          !(std::holds_alternative<Symbols>(top) && std::get<Symbols>(top) == Symbols::LPAREN);
@@ -94,12 +82,12 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                     {
                         operations.pop();
                         if (operations.empty()) {
-                            throw except::parse_error("Parentheses Mismatch : Expected corresponding opening parentheses!");
+                            throw except::parentheses_mismatch("expected corresponding opening parentheses!");
                         }
                         tokens.push(std::get<Operation>(top));
                     }
                     if(std::get<Symbols>(operations.top()) != Symbols::LPAREN)
-                        throw except::parse_error("Parentheses Mismatch | Missing Opening Paren");
+                        throw except::parentheses_mismatch("missing opening paren");
                     else /* Not Required */
                         operations.pop();
 
@@ -113,7 +101,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                 } break;
 
                 default:
-                    std::cerr << "Unexpected Symbol : " << static_cast<char>(symbol) << std::endl;
+                    throw except::parse_error("Unexpected Symbol : " + std::string(1, static_cast<char>(symbol)));
                     break;
                 }
             }
@@ -135,7 +123,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                     throw except::parse_error("Unknown Sentinel!");
                 }
             }
-            else throw except::parse_error("Unknown Token encountered while parsing!");
+            else throw except::parse_error("Unknown Token : '" + std::string(1, static_cast<char>(token)) + "' encountered while parsing!");
         }, current);
         lexed.pop();
     }
@@ -145,7 +133,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
         if (std::holds_alternative<Operation>(operations.top()))
             tokens.push(std::move(std::get<Operation>(operations.top())));
         else if (std::holds_alternative<Symbols>(operations.top()) && std::get<Symbols>(operations.top()) == Symbols::LPAREN)
-            throw except::parse_error("Parentheses Mismatch : Extra Parentheses encountered!");
+            throw except::parentheses_mismatch("missing closing paren!");
         operations.pop();
     }
 
@@ -242,3 +230,16 @@ void Parser::clear() const
     while(!tokens.empty()) tokens.pop();
 }
 */
+
+/*
+// operations.push(token);
+    // lexed.pop();
+    if(lexed.empty() || !std::holds_alternative<Operand>(lexed.front())) {
+        std::string fname = "unknown";
+        for(const auto &[name, id] : operations::funcids) if(id == std::get<Functions>(token)) fname = name;
+        std::cerr << "Missing operand to the function : " << fname << '\n';
+        throw except::parse_error("Operand Missing");
+    }
+// tokens.emplace(std::move(std::get<Operand>(lexed.front())));
+// push function after pushing subexpr (temporarily save it and add it after RPAREN)
+ */

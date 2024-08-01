@@ -6,46 +6,34 @@
 
 namespace evaluator
 {
-class SyntaxTree;
+
 namespace except {
-
-class evaluate_error : public std::exception
+struct evaluate_error : public evaluator_exception
 {
-public:
-    evaluate_error(const std::string &message = "Unspecified") : msg("Evaluate Error | ")
-    {
-        msg.append(message);
-        msg.push_back('\n');
-    }
-
-    const char* what() const noexcept override {
-        // msg.insert(0, "Evaluate Error | ");
-        return msg.c_str();
-    }
-
-protected:
-    std::string msg;
+    evaluate_error(const std::string &message = "Unspecified") : evaluator_exception("Evaluate Error | " + message) {}
 };
 
 struct missing_operand : public evaluate_error
 {
     enum Type { FUNCTION, UNARY, BINARY };
     missing_operand(Type type)
-        : evaluate_error("Missing Operand(s) to ")
+        : evaluate_error("Missing Operand(s) to " + stringify(type))
+    {
+    }
+
+    static std::string stringify(Type type)
     {
         std::string suffix;
         if(type == Type::BINARY) suffix = "Binary";
         else if(type == Type::UNARY) suffix = "Unary";
         else if(type == Type::FUNCTION) suffix = "Function";
         else suffix = "???";
-        if(std::isspace(msg.back())) msg.pop_back();
 
-        msg.append(suffix + (type == Type::FUNCTION ? "!" : " operation!"));
-        msg.push_back('\n');
+        return std::string(suffix + (type == Type::FUNCTION ? "!" : " operation!"));
     }
 };
-
 }
+
 	class EVALUATOR_API SyntaxTree
 	{
         friend class Evaluator;

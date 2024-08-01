@@ -90,7 +90,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
                     msg = '\'' + name + "' is not a valid argument to function!";
                 }
                 else
-                    msg = "Name '" + name + "' is not registered!";
+                    msg = "name '" + name + "' is not registered!";
                 throw except::lexer_error(msg); // not a registered function (not found in registry map)
             }
             ++func;

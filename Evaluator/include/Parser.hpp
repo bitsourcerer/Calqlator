@@ -13,16 +13,16 @@ namespace evaluator
 {
 namespace except {
 // TODO : create custom exceptions for modules, like parse_error for Parser
-class parse_error : public std::logic_error
+struct parse_error : public evaluator_exception
 {
-public:
-    parse_error(const std::string &message = "Unspecifed") : std::logic_error("Parse Error | " + message + "\n") {}
-    /*
-    const char* what() const noexcept override {
-    }
-private:
-    std::string msg = "Parse Error | "; */
+    parse_error(const std::string &message = "Unspecifed") : evaluator_exception("Parse Error | " + message) {}
 };
+
+struct parentheses_mismatch : public parse_error
+{
+    parentheses_mismatch(const std::string &message = "unspecified") : parse_error("Parentheses Mismatch : " + message) {}
+};
+
 }
 
 	class EVALUATOR_API Parser
