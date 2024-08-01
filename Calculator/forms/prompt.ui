@@ -67,6 +67,9 @@
    <property name="text">
     <string/>
    </property>
+   <property name="placeholderText">
+    <string>Expression i.e. 256 * 5 + 66 / 6 - (2 ^ 5)</string>
+   </property>
   </widget>
  </widget>
  <resources/>

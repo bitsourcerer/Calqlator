@@ -30,6 +30,7 @@ private:
 class EVALUATOR_API Lexer
 {
     friend class Evaluator;
+    using exception_t = except::lexer_error;
 public:
     // using TokenQueue = std::queue<UnifiedToken, std::list<UnifiedToken>>;
     using TokenQueue = std::queue<UnifiedToken>;

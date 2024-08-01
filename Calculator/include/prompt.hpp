@@ -16,6 +16,9 @@ public:
 
     QString getExpression();
 
+signals:
+    // void gotExpression(const QString&);
+
 private:
     Ui::Prompt *ui;
 };

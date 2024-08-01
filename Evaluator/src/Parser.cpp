@@ -185,7 +185,7 @@ Parser::TokenQueue&& Parser::parse(Lexer::TokenQueue &lexed)
                         tokens.push(std::get<Operation>(top));
                     }
                     if(std::get<Symbols>(operations.top()) != Symbols::LPAREN)
-                        throw except::parse_error("Parenthese Mismatch | Missing Opening Paren");
+                        throw except::parse_error("Parentheses Mismatch | Missing Opening Paren");
                     else /* Not Required */
                         operations.pop();
 

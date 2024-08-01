@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->ShowOuput, SIGNAL(triggered(bool)), out, SLOT(show()));
     // connect(out, SIGNAL(logEmitted(bool)), this, SLOT(signal_output(bool)));
     connect(this, SIGNAL(evaluated(bool)), this, SLOT(signal_output(bool)));
+    connect(out, SIGNAL(expressionEntered(QString)), this, SLOT(evaluate_custom(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +43,8 @@ namespace {
 bool ready = false; // to mimic windows's calculator's semantics
 bool period = false; // number has a period (dot)
 bool paren = false; // parentheses just closed, can't allow numbers directly without an operator first
+
+QElapsedTimer watch;
 }
 
 QStack<Operand> subresults;
@@ -50,7 +53,7 @@ QStack<std::string::size_type> markers;
 void MainWindow::evaluate_expression()
 {
     // static QString last;
-    static QElapsedTimer watch;
+    // static QElapsedTimer watch;
     bool flag = false; // if markers are present we turn off replace_subexpr so that it doesnt cause problems
 
     auto expr = ui->equation->text();
@@ -73,15 +76,18 @@ void MainWindow::evaluate_expression()
      * if(ui->equation->text().isEmpty()) expr.append(' ' + last);
      */
 
-    watch.start();
     Operand result = 0;
+    watch.start();
+
     try {
     result = evaluator::eval(expr.toStdString());
     } catch(const std::exception &e) {
         std::cerr << e.what();
+        /*
         ui->number->setText("Error");
         ready = paren = period = false;
         return;
+        */
     }
 
     auto elapsed = watch.nsecsElapsed() / 1e6;
@@ -297,16 +303,29 @@ void MainWindow::devel_prompt(bool)
 {
     if(prompt->exec() != QDialog::Accepted) return;
     auto expression = prompt->getExpression();
+    evaluate_custom(expression);
+}
+
+Operand MainWindow::evaluate_custom(const QString &expression)
+{
+    Operand result = 0.0;
+
     qDebug() << "Evaluating Custom Expression : " << expression << '\n';
+    watch.start();
     try {
-        auto result = evaluator::eval(expression.toStdString());
-        ui->number->setText(QString::number(result));
+        result = evaluator::eval(expression.toStdString());
     } catch(const std::exception& e) {
         std::cerr << e.what();
         signal_output(false, "green");
         ui->number->setText("Error");
         ready = false;
+        return std::numeric_limits<Operand>::infinity();
     }
+    auto elapsed = watch.nsecsElapsed() / 1e6;
+    ui->number->setText(QString::number(result));
+    qDebug() << "Evaluate: " << expression << "| Result: " << result << " | Took " << elapsed << " milliseconds!\n";
+    std::cout << std::quoted(expression.toStdString()) << "| " << result << " | " << elapsed << " ms\n";
+    return result;
 }
 
 void MainWindow::signal_output(bool success, QString color)

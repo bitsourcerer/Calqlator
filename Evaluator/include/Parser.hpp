@@ -28,6 +28,7 @@ private:
 	class EVALUATOR_API Parser
     {
         friend class Evaluator;
+        using exception_t = except::parse_error;
 	public:
         using TokenQueue = std::queue<Token>; // using std::list as backend increases time of the first evaluation and doesnt yield much
         template <typename T> using VecStack = std::stack<T, std::vector<T>>;

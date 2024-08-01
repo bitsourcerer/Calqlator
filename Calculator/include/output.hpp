@@ -23,10 +23,12 @@ public:
 
 signals:
     void logEmitted(bool); // to signal to other widgets that the log is received (the param tells if its an error or not)
+    void expressionEntered(QString);
 
 private slots:
     void clear(); // clear text browser
     void appendText(const QString&, StreamType type);
+    void evaluateExpr();
 
 private:
     Ui::Output *ui;

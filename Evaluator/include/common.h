@@ -82,7 +82,8 @@ namespace evaluator
 
         enum class Sentinels : OperationEnumeratorUnderlyingType
         {
-            FUNC_BEG = '(', FUNC_END = ')'
+            FUNC_BEG = '(', FUNC_END = ')',
+            TOK_BEG = '<', TOK_END = '>' // future use
         };
 
         extern EVALUATOR_API std::unordered_map<operations::BinaryOPS, std::function<Result(Operand, Operand)>> binops;

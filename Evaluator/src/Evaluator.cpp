@@ -32,10 +32,12 @@ Evaluator& Evaluator::feed(const std::string &str)
         lexer.clear();
         throw;
     } catch(const except::parse_error&) {
+        lexer.clear();
         parser.clear();
         throw;
     } catch(const except::evaluate_error&) {
         tree.clear();
+        parser.clear();
         throw;
     } catch(const std::exception&) {
         /*

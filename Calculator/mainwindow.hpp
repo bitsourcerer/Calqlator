@@ -6,6 +6,8 @@
 #include "prompt.hpp"
 #include "output.hpp"
 
+using Operand = double;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -28,6 +30,7 @@ private slots:
     void generate_random(); // get random number [0, 1) when rand is clicked
     void devel_prompt(bool);
     void signal_output(bool, QString = "grey");
+    Operand evaluate_custom(const QString&);
     // void output_pane(bool);
 
 signals:

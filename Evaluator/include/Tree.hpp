@@ -52,6 +52,7 @@ struct missing_operand : public evaluate_error
         friend class Evaluator;
 		using NodePtr = std::unique_ptr<Expression>;
         using ExprStack = Parser::VecStack<NodePtr>;
+        using exception_t = except::evaluate_error;
 	public:
 		SyntaxTree();
 		SyntaxTree(std::string_view expression);
@@ -62,12 +63,17 @@ struct missing_operand : public evaluate_error
 
         // SyntaxTree& build(const Parser::TokenQueue &tokens);
         SyntaxTree& build(Parser::TokenQueue &&tokens);
+        void set(Parser::TokenQueue &&tokens);
+        SyntaxTree& synthesize() {
+            return build(std::move(tokens));
+        }
 
         EVALUATOR_DEPRECATED Expression* getTree() const;
         Result evaluate() const;
 
 	private:
 		NodePtr root;
+        Parser::TokenQueue tokens;
 
         void clear() {
             root.reset(nullptr);

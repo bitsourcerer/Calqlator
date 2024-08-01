@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cassert>
+#include <cstdint>
 
 #include "Lexer.hpp"
 
@@ -26,7 +27,7 @@ Lexer::TokenQueue& Lexer::tokenize() const
      *             std::remove_if(this->expression.cbegin(), this->expression.cend(), isspace));
      */
     auto &tokens = this->tokens;
-    bool func = false; // to mark if currently processing function subexpr
+    std::uint8_t func = 0; // to mark if currently processing function subexpr
 
     eTokenType previous = eTokenType::UNKNOWN;
     for(decltype(expression)::size_type i = 0; i < expression.length(); ++i)
@@ -72,15 +73,29 @@ Lexer::TokenQueue& Lexer::tokenize() const
         {
             // auto itb = expression.cbegin() + i;
             // auto ite = std::find(expression.cbegin() + i, expression.cend(), ')'); // closing of function
-            std::string::size_type start = expression.find_first_of('(', i+2);
-            auto fn = expression.substr(i, start - i);
+            auto start = expression.find_first_of(static_cast<decltype(expression)::value_type>(Sentinels::FUNC_BEG), i+2);
+            auto name = expression.substr(i, start - i);
+            if(start == std::string::npos) name = expression.substr(
+                    i, expression.find_first_of(
+                        static_cast<decltype(expression)::value_type>(Sentinels::FUNC_END), i
+                    ) - i
+                ); // Parser will get it!
 
-            if (operations::funcids.find(fn) == funcids.end()) {
-                if(start == std::string::npos) fn = expression.substr(i, expression.find_first_of(' ', i));
-                throw except::lexer_error("Name '" + fn + "' not registered!"); // not a registered function (not found in registry map)
+            if (operations::funcids.find(name) == funcids.end()) {
+                std::string msg;
+                start = expression.find_first_of("( )", i);
+                name = expression.substr(i, start - i);
+
+                if(func) {
+                    // start = expression.find_first_of(static_cast<std::string::value_type>(Sentinels::FUNC_END), i);
+                    msg = '\'' + name + "' is not a valid argument to function!";
+                }
+                else
+                    msg = "Name '" + name + "' is not registered!";
+                throw except::lexer_error(msg); // not a registered function (not found in registry map)
             }
-            // func = true;
-            tokens.emplace(Operation{funcids.at(fn)});
+            ++func;
+            tokens.emplace(Operation{funcids.at(name)});
 
             /*
             tokens.push(Sentinels::FUNC_BEG);
@@ -99,14 +114,14 @@ Lexer::TokenQueue& Lexer::tokenize() const
             tokens.push(value);
             */
             // i += std::distance(itb, ite);
-            i += fn.length() - 1;
+            i += name.length() - 1;
             previous = eTokenType::FUNCTION;
         }
         else if(current == '(')
         {
             if(previous == eTokenType::FUNCTION && false) /* DISABLED */ {
-                func = true;
-                tokens.push(Sentinels::FUNC_BEG);
+                ++func;
+                tokens.push(/*Sentinels::FUNC_BEG*/ Symbols::LPAREN);
             }
             else
                 tokens.push(Symbols::LPAREN);
@@ -115,8 +130,8 @@ Lexer::TokenQueue& Lexer::tokenize() const
         else if(current == ')')
         {
             if(func) {
-                tokens.push(Sentinels::FUNC_END);
-                func = false;
+                tokens.push(/*Sentinels::FUNC_END*/ Symbols::RPAREN); // not yet activated
+                --func;
             }
             else tokens.push(Symbols::RPAREN);
             previous = eTokenType::RPAREN;

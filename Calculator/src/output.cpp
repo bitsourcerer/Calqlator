@@ -14,6 +14,7 @@ Output::Output(QWidget *parent)
     ui->setupUi(this);
 
     connect(ui->clear, SIGNAL(clicked()), this, SLOT(clear()));
+    connect(ui->evaluate, SIGNAL(clicked(bool)), this, SLOT(evaluateExpr()));
     connect(redcerr, SIGNAL(received(QString, StreamType)), this, SLOT(appendText(QString, StreamType)));
     connect(redcout, SIGNAL(received(QString, StreamType)), this, SLOT(appendText(QString, StreamType)));
 
@@ -61,6 +62,11 @@ void Output::appendText(const QString &text, StreamType type)
     }
     ui->text->insertPlainText(text);
     emit logEmitted(type == StreamType::STD_ERR); // emit and tell if error is received
+}
+
+void Output::evaluateExpr()
+{
+    emit expressionEntered(ui->expression->text());
 }
 
 OutputRedirector::OutputRedirector(QTextBrowser *out, QObject *parent)

@@ -132,6 +132,11 @@ SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
     return *this;
 }
 
+void SyntaxTree::set(Parser::TokenQueue &&tokens)
+{
+    this->tokens = std::move(tokens);
+}
+
 Expression* SyntaxTree::getTree() const
 {
     return root.get(); // temporary workaround
