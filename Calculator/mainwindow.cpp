@@ -230,7 +230,7 @@ void MainWindow::handle_parentheses()
         if(!eqn.trimmed().endsWith(btn->text())) eqn.append(num + ' '); // if the equation doesnt end with ')'
 
         subexpr = eqn.mid(markers.pop()) + ')';
-        auto result = evaluator::eval(subexpr.toStdString());
+        auto result = evaluate_custom(subexpr); /*evaluator::eval(subexpr.toStdString());*/
         subresults.push(result);
         ui->number->setText(QString::number(result));
 
@@ -316,7 +316,7 @@ Operand MainWindow::evaluate_custom(const QString &expression)
         result = evaluator::eval(expression.toStdString());
     } catch(const std::exception& e) {
         std::cerr << e.what();
-        signal_output(false, "green");
+        // signal_output(false, "green");
         ui->number->setText("Error");
         ready = false;
         return std::numeric_limits<Operand>::infinity();
