@@ -35,21 +35,20 @@ private:
         friend TokenQueue&& ShuntingYard(Parser&);
 
 		Parser() = default;
-		Parser(std::string_view);
-		Parser& feed(std::string_view);
+        Parser(Lexer::TokenQueue&);
+        // Parser& feed(Lexer::TokenQueue&);
         // [[MAYBE_UNUSED]] std::string parse() const;
         TokenQueue&& parse();
         Parser::TokenQueue&& parse(Lexer::TokenQueue&);
         TokenQueue&& getTokens();
 
 	private:
-		std::string input;
-        // mutable std::string output; // removed permanently
         mutable TokenQueue tokens;
-        // static TokenQueue&& ShuntingYard(Parser *const);
+
         void clear() const {
             while(!tokens.empty()) tokens.pop();
         }
+        // static TokenQueue&& ShuntingYard(Parser *const);
 	};
 
     Parser::TokenQueue&& ShuntingYard(Parser&);

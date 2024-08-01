@@ -46,7 +46,6 @@ struct missing_operand : public evaluate_error
 };
 
 }
-
 	class EVALUATOR_API SyntaxTree
 	{
         friend class Evaluator;
@@ -55,16 +54,13 @@ struct missing_operand : public evaluate_error
         using exception_t = except::evaluate_error;
 	public:
 		SyntaxTree();
-		SyntaxTree(std::string_view expression);
         // SyntaxTree(const Parser::TokenQueue&);
         SyntaxTree(Parser::TokenQueue&&);
 
-		SyntaxTree& build(std::string_view expression);
-
-        // SyntaxTree& build(const Parser::TokenQueue &tokens);
         SyntaxTree& build(Parser::TokenQueue &&tokens);
-        void set(Parser::TokenQueue &&tokens);
-        SyntaxTree& synthesize() {
+        EVALUATOR_UNUSED void set(Parser::TokenQueue &&tokens);
+
+        EVALUATOR_UNUSED SyntaxTree& synthesize() {
             return build(std::move(tokens));
         }
 
@@ -73,7 +69,7 @@ struct missing_operand : public evaluate_error
 
 	private:
 		NodePtr root;
-        Parser::TokenQueue tokens;
+        EVALUATOR_UNUSED Parser::TokenQueue tokens; // not yet activated
 
         void clear() {
             root.reset(nullptr);

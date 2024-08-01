@@ -4,7 +4,7 @@
 using namespace evaluator;
 
 Evaluator::Evaluator(const std::string &infix) : fed(true), input(infix)
-    , lexer(infix), parser(infix), tree(parser.parse())
+    , lexer(infix), parser(lexer.tokenize()), tree(parser.parse())
 {
 }
 
@@ -19,9 +19,7 @@ Operand Evaluator::evaluate()
 Evaluator& Evaluator::feed(const std::string &str)
 {
 	input = str;
-    // input = parser.feed(input).parse();
-    // auto &&t = parser.feed(str).parse();
-    // tree.build(std::move(t));
+
     lexer.set(input);
 
     try {
@@ -49,8 +47,6 @@ Evaluator& Evaluator::feed(const std::string &str)
         fed = false;
         throw; // rethrow to be handled by top level eval function
     }
-
-    // tree.build(parser.feed(str).parse());
 
 	fed = true;
 	return *this;

@@ -11,7 +11,7 @@ Result Factorial(Operand op) noexcept
     return op * Factorial(op - 1);
 }
 
-EVALUATOR_API std::unordered_map<BinaryOPS, std::function<Result(Operand, Operand)>> operations::binops = {
+std::unordered_map<BinaryOPS, std::function<Result(Operand, Operand)>> operations::binops = {
 	{ BinaryOPS::SUBTRACTION, std::minus<operand_t>() },
 	{ BinaryOPS::ADDITION, std::plus<operand_t>() },
 	{ BinaryOPS::MULTIPLICATION, std::multiplies<operand_t>() },
@@ -21,12 +21,12 @@ EVALUATOR_API std::unordered_map<BinaryOPS, std::function<Result(Operand, Operan
 	{ BinaryOPS::UNSPECIFIED, nullptr }
 };
 
-EVALUATOR_API std::unordered_map<UnaryOPS, std::function<Result(Operand)>> operations::unops = {
+std::unordered_map<UnaryOPS, std::function<Result(Operand)>> operations::unops = {
     { UnaryOPS::NEGATION, std::negate<operand_t>() },
     { UnaryOPS::FACTORIAL, Factorial }
 };
 
-EVALUATOR_API const std::unordered_map<operations::Functions, std::function<Result(Operand)>> operations::funcs
+const std::unordered_map<operations::Functions, std::function<Result(Operand)>> operations::funcs
 {
 	{ Functions::SIN , [](Operand op) -> Result { return std::sin(util::ConvertDegToRad(op)); } },
 	{ Functions::COS , [](Operand op) -> Result { return std::cos(util::ConvertDegToRad(op)); } },
@@ -37,7 +37,7 @@ EVALUATOR_API const std::unordered_map<operations::Functions, std::function<Resu
 	{ Functions::LOG2, [](Operand op) -> Result { return std::log2(op); } }
 };
 
-EVALUATOR_API const std::map<std::string_view, Functions> operations::funcids
+const std::map<std::string_view, Functions> operations::funcids
 {
 	{ "sin", Functions::SIN },
 	{ "cos", Functions::COS },

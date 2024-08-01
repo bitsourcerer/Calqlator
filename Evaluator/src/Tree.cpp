@@ -16,11 +16,6 @@ SyntaxTree::SyntaxTree() : root(nullptr)
 {
 }
 
-SyntaxTree::SyntaxTree(std::string_view expression) : SyntaxTree()
-{
-	build(expression);
-}
-
 /*
 evaluator::SyntaxTree::SyntaxTree(const Parser::TokenQueue &tokens)
 {
@@ -33,49 +28,6 @@ evaluator::SyntaxTree::SyntaxTree(Parser::TokenQueue &&tokens)
 }
 
 // All need heavy optimizations
-SyntaxTree& SyntaxTree::build(std::string_view expression)
-{
-	// use parser to parse for tokens
-	const std::string expr (expression);
-	std::istringstream strm(expr);
-
-	// only if expression is container of Tokens it can be easier to parse
-    Parser::VecStack<std::unique_ptr<Expression>> exp;
-	std::string token;
-	char operation = 0;
-	while (strm >> token)
-	{
-        if (std::count_if(token.cbegin(), token.cend(), ::isdigit))
-		{
-			auto value = std::stod(token);
-			exp.push(std::make_unique<Number>(value));
-		}
-		else if (auto it = std::find_if(token.cbegin(), token.cend(),
-			[](char c) { return binops.find(static_cast<BinaryOPS>(c)) != binops.end(); });
-			it != token.end())
-		{
-			operation = *it;
-				auto right = std::move(exp.top()); exp.pop();
-				auto left = std::move(exp.top()); exp.pop();
-
-				exp.push(std::make_unique<Binary>(std::move(left), std::move(right), static_cast<operations::BinaryOPS>(operation)));
-		}
-		else if (std::isalpha(token.front()))
-		{
-			auto fn = token.front();
-			if (operations::funcs.find(static_cast<Functions>(fn)) == funcs.end()) continue;
-
-			auto oper = std::move(exp.top()); exp.pop();
-			exp.push(std::make_unique<Function>(std::move(oper), static_cast<Functions>(fn)));
-		}
-		else continue;
-	}
-	assert(!exp.empty());
-	root = std::move(exp.top()); exp.pop();
-
-	return *this;
-}
-
 SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)
 {
     using except::missing_operand;

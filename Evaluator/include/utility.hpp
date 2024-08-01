@@ -32,3 +32,4 @@ std::cerr << msg; \
 #define SYNTAX_ERROR(msg) EMIT((std::string("Syntax Error: ") + msg))
 
 #define EVALUATOR_DEPRECATED [[deprecated]]
+#define EVALUATOR_UNUSED [[maybe_unused]]

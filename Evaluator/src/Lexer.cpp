@@ -87,7 +87,6 @@ Lexer::TokenQueue& Lexer::tokenize() const
                 name = expression.substr(i, start - i);
 
                 if(func) {
-                    // start = expression.find_first_of(static_cast<std::string::value_type>(Sentinels::FUNC_END), i);
                     msg = '\'' + name + "' is not a valid argument to function!";
                 }
                 else
@@ -97,22 +96,6 @@ Lexer::TokenQueue& Lexer::tokenize() const
             ++func;
             tokens.emplace(Operation{funcids.at(name)});
 
-            /*
-            tokens.push(Sentinels::FUNC_BEG);
-            Lexer funcTokenizer;
-            funcTokenizer.set(std::string(std::next(itb + (start - i)), ite));
-            funcTokenizer.tokenize();
-            auto funcTokens = funcTokenizer.getTokens();
-            while(!funcTokens.empty()) {
-                tokens.push(std::move(funcTokens.front()));
-                funcTokens.pop();
-            }
-            if(ite != expression.cend()) tokens.push(Sentinels::FUNC_END);
-            else throw except::lexer_error("Function didn't close!");
-
-            Operand value = std::stod(expression.substr(fn.length() + i + 1, std::distance(ite, std::next(itb, fn.length() + 1))));
-            tokens.push(value);
-            */
             // i += std::distance(itb, ite);
             i += name.length() - 1;
             previous = eTokenType::FUNCTION;
