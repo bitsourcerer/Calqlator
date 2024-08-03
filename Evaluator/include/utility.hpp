@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 // TODO : Switch both to long double
 typedef double operand_t;
 typedef double result_t;
@@ -14,6 +16,36 @@ namespace evaluator::util
 
 	constexpr double ConvertDegToRad(Operand deg) { return deg * (PI / 180); }
 	constexpr double ConvertRadToDeg(Operand rad) { return rad * (180 / PI); }
+
+template <typename T, typename = std::enable_if_t<std::is_default_constructible<T>::value>>
+class Singleton
+{
+public:
+    Singleton() = default;
+    ~Singleton() = default;
+
+    static T& GetInstance()
+    {
+        static T instance;
+        return instance;
+    }
+    T* operator->() const
+    {
+        return std::addressof(GetInstance());
+    }
+    T& operator*() const
+    {
+        return GetInstance();
+    }
+    T& operator()() const
+    {
+        return GetInstance();
+    }
+
+private:
+    static inline T *const p = nullptr;
+};
+
 }
 
 #define EMIT(msg) \

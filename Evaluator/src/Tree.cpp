@@ -12,20 +12,25 @@
 using namespace evaluator;
 using namespace evaluator::operations;
 
+/*
 SyntaxTree::SyntaxTree() : root(nullptr)
 {
 }
 
-/*
 evaluator::SyntaxTree::SyntaxTree(const Parser::TokenQueue &tokens)
 {
     build(tokens);
 }*/
 
+SyntaxTree::SyntaxTree(diag::DiagnosticsHolder &holder) : diagnostics(holder, diag::Origin::SYNTREE)
+{
+}
+
+/*
 evaluator::SyntaxTree::SyntaxTree(Parser::TokenQueue &&tokens)
 {
     build(std::move(tokens));
-}
+}*/
 
 // All need heavy optimizations
 SyntaxTree& evaluator::SyntaxTree::build(Parser::TokenQueue&& tokens)

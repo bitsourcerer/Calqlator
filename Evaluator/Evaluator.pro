@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     Eval.cpp \
     dllmain.cpp \
+    src/Diagnostics.cpp \
     src/Lexer.cpp \
     src/Tree.cpp \
 	src/common.cpp src/Evaluator.cpp src/Parser.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     API.h \
     Eval.h \
 	framework.h \
+    include/Diagnostics.hpp \
     include/Evaluator.hpp \
     include/Lexer.hpp \
     include/Tree.hpp \

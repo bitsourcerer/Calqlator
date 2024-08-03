@@ -4,6 +4,7 @@
 #include <list>
 
 #include "common.h"
+#include <Diagnostics.hpp>
 
 namespace evaluator
 {
@@ -22,8 +23,9 @@ class EVALUATOR_API Lexer
 public:
     // using TokenQueue = std::queue<UnifiedToken, std::list<UnifiedToken>>;
     using TokenQueue = std::queue<UnifiedToken>;
-    Lexer() = default;
-    Lexer(std::string_view);
+    // Lexer() = default; // soon to be removed
+    // Lexer(std::string_view); // soon to be removed
+    Lexer(diag::DiagnosticsHolder&);
     void set(std::string_view expr);
     TokenQueue& tokenize() const;
     TokenQueue& getTokens() const;
@@ -32,6 +34,8 @@ private:
     std::string expression;
     bool filled = false;
     mutable TokenQueue tokens;
+
+    diag::Diagnostics diagnostics;
 
     void clear() const {
         if(!tokens.empty()) tokens = TokenQueue();

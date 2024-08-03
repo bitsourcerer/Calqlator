@@ -9,6 +9,8 @@
 #include "Lexer.hpp"
 #include "Precedence.hpp"
 
+#include "Diagnostics.hpp"
+
 namespace evaluator
 {
 namespace except {
@@ -34,8 +36,9 @@ public:
     template <typename T> using VecStack = std::stack<T, std::vector<T>>;
     friend TokenQueue&& ShuntingYard(Parser&);
 
-    Parser() = default;
-    Parser(Lexer::TokenQueue&);
+    // Parser() = default;
+    Parser(diag::DiagnosticsHolder&);
+    // Parser(Lexer::TokenQueue&);
     // Parser& feed(Lexer::TokenQueue&);
     // [[MAYBE_UNUSED]] std::string parse() const;
     TokenQueue&& parse();
@@ -44,6 +47,8 @@ public:
 
 private:
     mutable TokenQueue tokens;
+
+    diag::Diagnostics diagnostics;
 
     void clear() const {
         while(!tokens.empty()) tokens.pop();

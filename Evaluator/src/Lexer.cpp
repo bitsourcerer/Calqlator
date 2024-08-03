@@ -10,7 +10,12 @@ using namespace operations;
 
 enum struct eTokenType { OPERATION, OPERAND, FUNCTION, SYMBOL, LPAREN, RPAREN, UNKNOWN };
 
+/*
 Lexer::Lexer(std::string_view expr) : expression(expr), filled(!expression.empty())
+{
+}*/
+
+Lexer::Lexer(diag::DiagnosticsHolder &holder) : diagnostics(holder, diag::Origin::LEXER)
 {
 }
 

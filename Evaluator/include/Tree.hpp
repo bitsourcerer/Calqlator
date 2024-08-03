@@ -41,9 +41,10 @@ class EVALUATOR_API SyntaxTree
     using ExprStack = Parser::VecStack<NodePtr>;
     using exception_t = except::evaluate_error;
 public:
-    SyntaxTree();
+    // SyntaxTree();
     // SyntaxTree(const Parser::TokenQueue&);
-    SyntaxTree(Parser::TokenQueue&&);
+    // SyntaxTree(Parser::TokenQueue&&);
+    SyntaxTree(diag::DiagnosticsHolder&);
 
     SyntaxTree& build(Parser::TokenQueue &&tokens);
     EVALUATOR_UNUSED void set(Parser::TokenQueue &&tokens);
@@ -58,6 +59,8 @@ public:
 private:
     NodePtr root;
     EVALUATOR_UNUSED Parser::TokenQueue tokens; // not yet activated
+
+    diag::Diagnostics diagnostics;
 
     void clear() {
         root.reset(nullptr);

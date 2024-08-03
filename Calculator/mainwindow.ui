@@ -16,11 +16,17 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>640</width>
+    <height>430</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Calculator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Resources.qrc">
+   <iconset resource="res/Resources.qrc">
     <normaloff>:/Calculator.ico</normaloff>:/Calculator.ico</iconset>
   </property>
   <property name="toolButtonStyle">
@@ -60,6 +66,7 @@ border-radius: 5px;</string>
       <font>
        <family>OCR A Extended</family>
        <pointsize>22</pointsize>
+       <weight>50</weight>
        <bold>false</bold>
       </font>
      </property>
@@ -842,7 +849,7 @@ border-radius: 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="MainMenu">
@@ -878,17 +885,17 @@ border-radius: 5px;</string>
   </action>
  </widget>
  <resources>
-  <include location="Resources.qrc"/>
+  <include location="res/Resources.qrc"/>
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="functions"/>
   <buttongroup name="operations"/>
   <buttongroup name="digits">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
+  <buttongroup name="functions"/>
   <buttongroup name="commands"/>
  </buttongroups>
 </ui>

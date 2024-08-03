@@ -3,10 +3,21 @@
 
 using namespace evaluator;
 
+Evaluator::Evaluator() : fed(false), input()
+    , lexer(diagnostics), parser(diagnostics), tree(diagnostics)
+{
+}
+
+Evaluator::Evaluator(const std::string &infix) : fed(true), input(infix)
+    , lexer(diagnostics), parser(diagnostics), tree(diagnostics)
+{
+}
+
+/*
 Evaluator::Evaluator(const std::string &infix) : fed(true), input(infix)
     , lexer(infix), parser(lexer.tokenize()), tree(parser.parse())
 {
-}
+}*/
 
 Operand Evaluator::evaluate()
 {
@@ -50,4 +61,9 @@ Evaluator& Evaluator::feed(const std::string &str)
 
 	fed = true;
 	return *this;
+}
+
+void Evaluator::reportDiagnostics() const
+{
+    diagnostics.report();
 }

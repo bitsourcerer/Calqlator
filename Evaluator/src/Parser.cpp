@@ -9,10 +9,15 @@
 using namespace evaluator;
 using namespace evaluator::operations;
 
+Parser::Parser(diag::DiagnosticsHolder &holder) : diagnostics(holder, diag::Origin::PARSER)
+{
+}
+
+/*
 Parser::Parser(Lexer::TokenQueue &lexed)
 {
     parse(lexed);
-}
+}*/
 
 Parser::TokenQueue&& Parser::parse()
 {

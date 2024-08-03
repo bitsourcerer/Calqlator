@@ -23,15 +23,15 @@
 #define DEBUG false
 #endif // _DEBUG
 
-#ifndef CHAR_FLUSH
-#define FLUSH_ON_NL true
+#ifndef PER_CHAR_FLUSH
+#define FLUSH_ON_NEWLINE true
 #else
-#define FLUSH_ON_NL false
+#define FLUSH_ON_NEWLINE false
 #endif
 
 namespace {
 constexpr const static bool debug = DEBUG;
-constexpr const static bool flush_on_newline = FLUSH_ON_NL;
+constexpr const static bool flush_on_newline = FLUSH_ON_NEWLINE;
 }
 
 #ifndef interface
@@ -117,14 +117,14 @@ public:
     const char* what() const noexcept override
     {
         if constexpr(flush_on_newline)
-            if(!nl) msg.push_back('\n');
+            if(!nl) { msg.push_back('\n'); nl = true; }
 
         return msg.c_str();
     }
 
 private:
     mutable std::string msg;
-    bool nl = false;
+    mutable bool nl = false;
 };
 
 } // except
